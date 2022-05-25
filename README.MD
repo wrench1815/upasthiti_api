@@ -1,5 +1,10 @@
 # Upasthiti
 
+## Dont forget to setup .env file
+
+- copy demo.env to .env
+- change values as needed in .env
+
 ## Getting Started
 
 ## Note: This method is specifically used by me. But you can also use other methods as well.
