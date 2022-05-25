@@ -7,9 +7,21 @@ authors = ["Hardeep Kumar <hardeepkumar1815@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Django = "^4.0.4"
+environs = {extras = ["django"], version = "^9.5.0"}
+dj-database-url = "^0.5.0"
+whitenoise = "^6.1.0"
+django-jazzmin = "^2.5.0"
+djangorestframework = "^3.13.1"
+psycopg2-binary = "^2.9.3"
+gunicorn = "^20.1.0"
+django-cors-headers = "^3.12.0"
+drf-spectacular = "^0.22.1"
+drf-spectacular-sidecar = "^2022.5.1"
+djangorestframework-simplejwt = "^5.2.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.32.0"
+kolo = "^1.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
