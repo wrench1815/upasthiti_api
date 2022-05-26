@@ -2,7 +2,7 @@
 
 ## Dont forget to setup .env file
 
-- copy demo.env to .env
+- copy .env.demo to .env
 - change values as needed in .env
 
 ## Getting Started
