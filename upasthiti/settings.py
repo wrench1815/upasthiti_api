@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',  #? DRF
 
     #? Project Apps
+    'user',
     'api',
 ]
 
@@ -142,6 +143,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #? CORS Settings
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
 
+#! Overiding Djang User model with Custom User Model
+AUTH_USER_MODEL = 'user.User'
+
 # yapf: disable
 #? Jazzmin settings
 JAZZMIN_SETTINGS = {
@@ -194,8 +198,25 @@ JAZZMIN_SETTINGS = {
 
         #? model admin to link to (Permissions checked against model)
         {
-            "model": "auth.User"
+            "model": "user.User"
         },
+
+        #? JSON Schema Link
+        {
+            "name": "Schema JSON", "url": "/api/schema/json/", "new_window": True
+        },
+
+        #? Swagger Link
+        {
+            "name": "Swagger", "url": "/api/schema/swagger/", "new_window": True
+        },
+
+        #? Redoc Link
+        {
+            "name": "Redoc", "url": "/api/schema/redoc/", "new_window": True
+        },
+
+
     ],
 
     #############
@@ -220,7 +241,8 @@ JAZZMIN_SETTINGS = {
     #? Custom icons for side menu apps/models
     "icons": {
         "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
+        "user.user": "fas fa-user",
+        "user": "fas fa-user-cog",
         "auth.Group": "fas fa-users",
     },
     #? Icons that are used when one is not manually specified
