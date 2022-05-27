@@ -9,6 +9,9 @@ from rest_framework_simplejwt.views import (
 #? drf-spectacular
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView, SpectacularJSONAPIView
 
+#? User
+from user import views as UserViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -27,4 +30,13 @@ urlpatterns = [
     path('schema/redoc/',
          SpectacularRedocView.as_view(url_name='schema'),
          name='redoc'),
+
+    #? User
+    path('user/list/', UserViews.UserListAPIView.as_view(), name='user-list'),
+    path('user/<int:pk>/',
+         UserViews.UserDetailAPIView.as_view(),
+         name='user-detail'),
+    path('user/create/',
+         UserViews.UserCreateAPIView.as_view(),
+         name='user-create'),
 ]
