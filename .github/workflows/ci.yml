@@ -11,6 +11,7 @@ on:
     branches:
       - main
       - dev
+      - h-heroku-deploy
   pull_request:
     branches:
       - main
