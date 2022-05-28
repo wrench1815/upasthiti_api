@@ -60,7 +60,7 @@ jobs:
           # The appname to use for deploying/updating
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           # The branch that you would like to deploy to Heroku
-          branch: github.ref
+          branch: h-heroku-deploy
           # Set this to true if want to use --force
           # useforce: # optional
           # Set if your app is located in a subdirectory.
