@@ -1,2 +1,2 @@
-web: gunicorn blog.wsgi
+web: gunicorn upasthiti.wsgi
 release: python manage.py migrate
