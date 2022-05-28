@@ -32,11 +32,10 @@ urlpatterns = [
          name='redoc'),
 
     #? User
-    path('user/list/', UserViews.UserListAPIView.as_view(), name='user-list'),
+    path('user/',
+         UserViews.UserListCreateAPIView.as_view(),
+         name='user-list-create'),
     path('user/<int:pk>/',
          UserViews.UserDetailAPIView.as_view(),
          name='user-detail'),
-    path('user/create/',
-         UserViews.UserCreateAPIView.as_view(),
-         name='user-create'),
 ]
