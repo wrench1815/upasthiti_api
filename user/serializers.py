@@ -8,7 +8,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     '''
-        Serializer for User List and Detail
+        Serializer for User
     '''
 
     class Meta:
@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     '''
-        Serializer for User Creation, Update
+        Serializer for User Creation
     '''
     password = serializers.CharField(min_length=8,
                                      max_length=16,
@@ -48,3 +48,35 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'is_hod',
             'is_teacher',
         ]
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    '''
+        Serializer for User Update
+    '''
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'gender',
+            'is_admin',
+            'is_principal',
+            'is_hod',
+            'is_teacher',
+        ]
+
+
+class UserPasswordSerializer(serializers.Serializer):
+    '''
+        Serializer to Update User Password
+    '''
+    id = serializers.IntegerField()
+    password = serializers.CharField(min_length=8,
+                                     max_length=16,
+                                     validators=[validate_password])
+    confirm_password = serializers.CharField(min_length=8,
+                                             max_length=16,
+                                             validators=[validate_password])

@@ -36,6 +36,9 @@ urlpatterns = [
          UserViews.UserListCreateAPIView.as_view(),
          name='user-list-create'),
     path('user/<int:pk>/',
-         UserViews.UserDetailAPIView.as_view(),
+         UserViews.UserRetrieveUpdateDestroyAPIView.as_view(),
          name='user-detail'),
+    path('user/update_password/',
+         UserViews.UserPasswordUpdateAPIView.as_view(),
+         name='user-password-update'),
 ]
