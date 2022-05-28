@@ -11,7 +11,6 @@ on:
     branches:
       - main
       - dev
-      - h-heroku-deploy
   pull_request:
     branches:
       - main
@@ -40,16 +39,16 @@ jobs:
       - name: Run Tests
         run: |
           python manage.py test
-          
+
   deploy:
     name: Deploy to Heroku
     if: github.ref == 'refs/heads/dev'
-    
+
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
     needs: test
-      
+
     steps:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12
