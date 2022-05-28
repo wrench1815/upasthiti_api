@@ -54,7 +54,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'kolo.middleware.KoloMiddleware',  #? kolo
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',  #? CORS
     'whitenoise.middleware.WhiteNoiseMiddleware',  #? Whitenoise
@@ -65,6 +64,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('kolo.middleware.KoloMiddleware', )  #? Kolo
 
 ROOT_URLCONF = 'upasthiti.urls'
 
