@@ -73,10 +73,17 @@ class UserPasswordSerializer(serializers.Serializer):
     '''
         Serializer to Update User Password
     '''
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=True)
     password = serializers.CharField(min_length=8,
                                      max_length=16,
                                      validators=[validate_password])
     confirm_password = serializers.CharField(min_length=8,
                                              max_length=16,
                                              validators=[validate_password])
+
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError(
+                {'error': 'Confirm Password does not match Password'})
+
+        return data

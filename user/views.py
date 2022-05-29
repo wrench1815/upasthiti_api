@@ -172,6 +172,8 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         operation_id='user_password_update')
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         user = User.objects.get(pk=serializer.validated_data['id'])
 
         if user is None:
@@ -179,13 +181,6 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
             logger.error(response)
 
             return Response(response, status=status.HTTP_404_NOT_FOUND)
-
-        if serializer.validated_data['password'] != serializer.validated_data[
-                'confirm_password']:
-            response = {'detail': 'Confirm Password does not match Password'}
-            logger.error(response)
-
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(serializer.validated_data['password'])
         user.save()
