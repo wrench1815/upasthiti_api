@@ -4,10 +4,6 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from user import views, serializers
-
-import json
-
 User = get_user_model()
 
 
@@ -48,7 +44,13 @@ class TestViews(APITestCase):
             password='Test@123',
         )
 
-        self.user_range = self.user_range + 2
+        self.destroyable_user = User.objects.create(
+            email='destryuser@mail.com',
+            first_name='Destroy',
+            last_name='User',
+            gender='Male',
+            password='Test@123',
+        )
 
         self.client.force_authenticate(user=self.admin)
 
@@ -65,7 +67,7 @@ class TestViews(APITestCase):
         resp = self.client.get(reverse('user-list-create'))
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(resp.data), self.user_range)
+        self.assertEqual(len(resp.data), User.objects.count())
 
     def test_UserListing_unauthenticated(self):
         '''
@@ -145,3 +147,57 @@ class TestViews(APITestCase):
         self.assertEqual(resp.data, {'detail': 'User Updated Successfully'})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(updated_resp.data['email'], 'update1@user.com')
+
+    def test_UserDestroy(self):
+        resp = self.client.delete(
+            reverse('user-retrieve-update-destroy',
+                    kwargs={'pk': self.destroyable_user.id}))
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data, {'detail': 'User Deleted Successfully'})
+
+    def test_UserPasswordUpdate_success(self):
+        data = {
+            'id': self.forbidden_user.id,
+            'password': 'Rest@123',
+            'confirm_password': 'Rest@123'
+        }
+        resp = self.client.post(
+            reverse('user-password-update',
+                    kwargs={'pk': self.forbidden_user.id}), data)
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data,
+                         {'detail': 'Password Updated Successfully'})
+
+        login_resp = self.client.post(reverse('obtain_token_pair'), {
+            'email': self.forbidden_user.email,
+            'password': 'Rest@123'
+        })
+
+        self.assertEqual(login_resp.status_code, status.HTTP_200_OK)
+        self.assertContains(login_resp, 'access')
+        self.assertContains(login_resp, 'refresh')
+
+    def test_UserPasswordUpdate_not_found(self):
+        data = {
+            'password': 'Rest@123',
+            'confirm_password': 'Rest@123',
+        }
+        resp = self.client.post(
+            reverse('user-password-update', kwargs={'pk': 10000}), data)
+
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.data, {'detail': 'Not found.'})
+
+    def test_UserPasswordUpdate_passwords_dont_match(self):
+        data = {
+            'password': 'Rest@123',
+            'confirm_password': 'Test@123',
+        }
+        resp = self.client.post(
+            reverse('user-password-update', kwargs={'pk': 10000}), data)
+
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            resp.data, {'error': ['Confirm Password does not match Password']})
