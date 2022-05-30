@@ -33,12 +33,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = UserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data['password'] != serializer.validated_data[
-                'confirm_password']:
-            response = {'detail': 'Confirm Password does not match Password'}
-            logger.error(response)
 
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
         try:
             User.objects.get_or_create(
                 first_name=serializer.validated_data['first_name'],

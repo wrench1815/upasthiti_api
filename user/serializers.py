@@ -49,6 +49,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'is_teacher',
         ]
 
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
+            raise serializers.ValidationError(
+                {'error': 'Confirm Password does not match Password'})
+
+        return attrs
+
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     '''
@@ -81,9 +88,9 @@ class UserPasswordSerializer(serializers.Serializer):
                                              max_length=16,
                                              validators=[validate_password])
 
-    def validate(self, data):
-        if data['password'] != data['confirm_password']:
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
             raise serializers.ValidationError(
                 {'error': 'Confirm Password does not match Password'})
 
-        return data
+        return attrs
