@@ -38,7 +38,7 @@ urlpatterns = [
     path('user/<int:pk>/',
          UserViews.UserRetrieveUpdateDestroyAPIView.as_view(),
          name='user-retrieve-update-destroy'),
-    path('user/update_password/',
+    path('user/update_password/<int:pk>/',
          UserViews.UserPasswordUpdateAPIView.as_view(),
          name='user-password-update'),
 ]

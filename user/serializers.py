@@ -80,7 +80,7 @@ class UserPasswordSerializer(serializers.Serializer):
     '''
         Serializer to Update User Password
     '''
-    id = serializers.IntegerField(required=True)
+
     password = serializers.CharField(min_length=8,
                                      max_length=16,
                                      validators=[validate_password])

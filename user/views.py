@@ -169,13 +169,8 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.get(pk=serializer.validated_data['id'])
-
-        if user is None:
-            response = {'detail': 'User not found'}
-            logger.error(response)
-
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+        # find user by id and return 404 if not found
+        user = self.get_object()
 
         user.set_password(serializer.validated_data['password'])
         user.save()
