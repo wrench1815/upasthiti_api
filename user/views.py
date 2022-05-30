@@ -40,7 +40,12 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                 last_name=serializer.validated_data['last_name'],
                 email=serializer.validated_data['email'],
                 gender=serializer.validated_data['gender'],
-                password=serializer.validated_data['password'])
+                password=serializer.validated_data['password'],
+                is_admin=serializer.validated_data['is_admin'],
+                is_principal=serializer.validated_data['is_principal'],
+                is_hod=serializer.validated_data['is_hod'],
+                is_teacher=serializer.validated_data['is_teacher'],
+            )
 
         except Exception as ex:
             logger.error(str(ex))
