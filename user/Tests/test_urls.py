@@ -21,6 +21,6 @@ class TestUrls(APISimpleTestCase):
             views.UserRetrieveUpdateDestroyAPIView)
 
     def test_UserPasswordUpdateAPIView_resolves(self):
-        url = reverse('user-password-update')
+        url = reverse('user-password-update', kwargs={'pk': 1})
         self.assertEquals(
             resolve(url).func.view_class, views.UserPasswordUpdateAPIView)
