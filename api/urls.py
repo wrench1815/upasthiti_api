@@ -12,6 +12,9 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 #? User
 from user import views as UserViews
 
+#? Auth
+from authlogic import views as AuthViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -41,4 +44,7 @@ urlpatterns = [
     path('user/update_password/<int:pk>/',
          UserViews.UserPasswordUpdateAPIView.as_view(),
          name='user-password-update'),
+
+    #? Auth
+    path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),
 ]
