@@ -5,7 +5,10 @@ from django.db import models
 class CourseModel(models.Model):
     """Model definition for course."""
 
-    # TODO: Define fields here
+    course_name = models.TextField()
+    course_code = models.CharField(max_length=50)
+    teacher_assigned = models.IntegerField()
+    is_practical = models.BooleanField(default=False)
 
     class Meta:
         """Meta definition for course."""
@@ -15,4 +18,4 @@ class CourseModel(models.Model):
 
     def __str__(self):
         """Unicode representation of course."""
-        pass
+        return self.course_name
