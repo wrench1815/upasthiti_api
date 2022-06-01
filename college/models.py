@@ -1,3 +1,4 @@
+from ast import In
 from django.db import models
 from django.utils import timezone
 
@@ -14,7 +15,22 @@ class CollegeModel(models.Model):
         ('Affliated PG College', 'Affliated PG College'),
         ('Teacher Education College', 'Teacher Education College'),
     )
-
+    INSTITUTE_FOR = (
+        ('Men', 'Men'),
+        ('Women', 'Women'),
+        ('Co-Education', 'Co-Education'),
+    )
+    LOCATION_TYPE = (
+        ('Rural', 'Rural'),
+        ('Urban', 'Urban'),
+        ('Semi-Urban', 'Semi-Urban'),
+    )
+    FINANCIAL_MODEL = (
+        ('Govt. Funded', 'Govt. Funded'),
+        ('Self Financed', 'Self Financed'),
+        ('Public Private Partnership (PPP)',
+         'Public Private Partnership (PPP)'),
+    )
     institute_name = models.TextField()
     institute_address = models.TextField()
     institute_principal = models.IntegerField()
@@ -37,9 +53,9 @@ class CollegeModel(models.Model):
     institute_city = models.TextField()
     institute_pincode = models.CharField(max_length=10)
     running_frm_own_campus = models.BooleanField(default=True)
-    institute_for = models.CharField(max_length=150)  #todo: choices
-    location_type = models.CharField(max_length=15)  #todo: choices
-    financial_model = models.CharField(max_length=50)  #todo: choices
+    institute_for = models.CharField(max_length=14, choices=INSTITUTE_FOR)
+    location_type = models.CharField(max_length=11, choices=LOCATION_TYPE)
+    financial_model = models.CharField(max_length=33, choices=FINANCIAL_MODEL)
     campus_area = models.CharField(max_length=50)
     built_up_area = models.CharField(max_length=50)
     minority_institution = models.BooleanField(default=False)
