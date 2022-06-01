@@ -247,10 +247,13 @@ JAZZMIN_SETTINGS = {
         "user.user": "fas fa-user",
         "user": "fas fa-user-cog",
         "auth.Group": "fas fa-users",
+        "college": "fas fa-university",
+        "college.CollegeModel": "fas fa-university",
     },
+
     #? Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
+    "default_icon_children": "fas fa-archive",
 
     #################
     # Related Modal #
