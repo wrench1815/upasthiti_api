@@ -54,7 +54,7 @@ class CollegeModel(models.Model):
         blank=True,
     )
     institute_alternate_email = models.EmailField(
-        ('email address'),
+        ('alternate email address'),
         blank=True,
     )
 
