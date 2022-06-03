@@ -2,8 +2,9 @@ from django.db import models
 
 
 # Create your models her
-class departmentModel(models.Model):
-    """Model definition for departmentModel."""
+class DepartmentModel(models.Model):
+    """Model definition for DepartmentModel."""
+
     PROGRAMMES_OFFERED = (
         ('Under-Graduate', 'Under-Graduate'),
         ('Post-Graduate', 'Post-Graduate'),
@@ -14,6 +15,7 @@ class departmentModel(models.Model):
         ('UG Diploma', 'UG Diploma'),
         ('PG Diploma', 'PG Diploma'),
     )
+
     TOTAL_SEM = (
         (1, 1),
         (2, 2),
@@ -24,6 +26,7 @@ class departmentModel(models.Model):
         (7, 7),
         (8, 8),
     )
+
     depatment_name = models.TextField()
     department_code = models.CharField(max_length=50)
     programmes_offeres = models.CharField(max_length=16,
@@ -36,11 +39,11 @@ class departmentModel(models.Model):
     hod = models.IntegerField()
 
     class Meta:
-        """Meta definition for departmentModel."""
+        """Meta definition for DepartmentModel."""
 
         verbose_name = 'department'
         verbose_name_plural = 'departments'
 
     def __str__(self):
-
+        """Unicode representation of DepartmentModel."""
         return self.depatment_name
