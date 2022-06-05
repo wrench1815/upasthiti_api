@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models her
 class DepartmentModel(models.Model):
-    """Model definition for DepartmentModel."""
+    '''Model definition for DepartmentModel.'''
 
     PROGRAMMES_OFFERED = (
         ('Under-Graduate', 'Under-Graduate'),
@@ -27,9 +27,9 @@ class DepartmentModel(models.Model):
         (8, 8),
     )
 
-    depatment_name = models.TextField()
+    department_name = models.TextField()
     department_code = models.CharField(max_length=50)
-    programmes_offeres = models.CharField(max_length=16,
+    programmes_offered = models.CharField(max_length=16,
                                           choices=PROGRAMMES_OFFERED)
     total_semesters = models.IntegerField(choices=TOTAL_SEM)
     student_intake = models.IntegerField()
@@ -39,11 +39,11 @@ class DepartmentModel(models.Model):
     hod = models.IntegerField()
 
     class Meta:
-        """Meta definition for DepartmentModel."""
+        '''Meta definition for DepartmentModel.'''
 
         verbose_name = 'department'
         verbose_name_plural = 'departments'
 
     def __str__(self):
-        """Unicode representation of DepartmentModel."""
-        return self.depatment_name
+        '''Unicode representation of DepartmentModel.'''
+        return self.department_name

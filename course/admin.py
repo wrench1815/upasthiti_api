@@ -1,3 +1,19 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import CourseModel
+
+
+@admin.register(CourseModel)
+class CourseModelAdmin(admin.ModelAdmin):
+    '''Admin View for CourseModel'''
+
+    list_display = [
+        'course_name',
+        'course_code',
+        'is_practical',
+    ]
+
+    search_fields = [
+        'course_name',
+        'course_code',
+    ]
