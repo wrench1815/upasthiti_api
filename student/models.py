@@ -8,7 +8,7 @@ GENDER_CHOICES = (
 
 
 class StudentModel(models.Model):
-    """Model definition for StudentModel."""
+    '''Model definition for StudentModel.'''
 
     student_name = models.TextField()
     class_rollno = models.IntegerField()
@@ -16,11 +16,11 @@ class StudentModel(models.Model):
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
 
     class Meta:
-        """Meta definition for StudentModel."""
+        '''Meta definition for StudentModel.'''
 
         verbose_name = 'student'
         verbose_name_plural = 'students'
 
     def __str__(self):
-        """Unicode representation of StudentModel."""
+        '''Unicode representation of StudentModel.'''
         return self.student_name
