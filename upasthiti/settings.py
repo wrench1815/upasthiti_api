@@ -50,8 +50,10 @@ INSTALLED_APPS = [
     #? Project Apps
     'user',
     'teacher',
+    'course',
     'college',
     'api',
+    'department',
     'authlogic',
 ]
 
