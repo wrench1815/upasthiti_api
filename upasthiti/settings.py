@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from environs import Env
-import os
 import dj_database_url
 
 #? load env file/variables
@@ -51,11 +50,15 @@ INSTALLED_APPS = [
     #? Project Apps
     'user',
     'student',
+    'teacher',
+    'course',
+    'college',
     'api',
+    'department',
+    'authlogic',
 ]
 
 MIDDLEWARE = [
-    'kolo.middleware.KoloMiddleware',  #? kolo
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',  #? CORS
     'whitenoise.middleware.WhiteNoiseMiddleware',  #? Whitenoise
@@ -66,6 +69,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('kolo.middleware.KoloMiddleware', )  #? Kolo
 
 ROOT_URLCONF = 'upasthiti.urls'
 
@@ -245,10 +251,13 @@ JAZZMIN_SETTINGS = {
         "user.user": "fas fa-user",
         "user": "fas fa-user-cog",
         "auth.Group": "fas fa-users",
+        "college": "fas fa-university",
+        "college.CollegeModel": "fas fa-university",
     },
+
     #? Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
+    "default_icon_children": "fas fa-archive",
 
     #################
     # Related Modal #
@@ -369,5 +378,41 @@ SPECTACULAR_SETTINGS = {
         "displayOperationId": True,
         "displayRequestDuration": True,
         "filter": True,
+    },
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format':
+            '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/upasthiti.log',
+            'formatter': 'verbose',
+            'backupCount': 5,
+            'maxBytes': 10485760,  #? 10 MB
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
