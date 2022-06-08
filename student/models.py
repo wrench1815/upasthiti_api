@@ -1,19 +1,20 @@
 from django.db import models
 
-GENDER_CHOICES = (
-    ('Male', 'Male'),
-    ('Female', 'Female'),
-    ('Rather not Say', 'Rather not Say'),
-)
-
 
 class StudentModel(models.Model):
     '''Model definition for StudentModel.'''
-
-    student_name = models.TextField()
+    #Todo add relations
+    student_first_name = models.TextField()
+    student_last_name = models.TextField()
     class_rollno = models.IntegerField()
-    batch = models.IntegerField()
-    gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
+    email = models.EmailField()
+    phone_no = models.IntegerField(max_length=15)
+    profile_image = models.URLField()
+    courses = models.IntegerField()
+    department = models.IntegerField()
+    classes = models.IntegerField()
+    attendance = models.IntegerField()
+    created_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         '''Meta definition for StudentModel.'''

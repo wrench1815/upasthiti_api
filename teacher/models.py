@@ -3,8 +3,10 @@ from django.db import models
 
 class TeacherModel(models.Model):
     '''Model definition for TeacherModel.'''
-
-    teacher_name = models.TextField()
+    #TODO DISCUSSION
+    teacher_first_name = models.TextField()
+    teacher_last_name = models.TextField()
+    teacher_email=models.EmailField()
     teacher_department = models.IntegerField()
 
     class Meta:
