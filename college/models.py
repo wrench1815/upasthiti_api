@@ -1,6 +1,4 @@
-from ast import In
 from django.db import models
-from django.utils import timezone
 
 
 class CollegeModel(models.Model):
