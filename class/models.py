@@ -1,11 +1,13 @@
 from django.db import models
 from django.utils import timezone
 
+
 class ClassModel(models.Model):
     """Model definition for ClassModel."""
 
     name = models.TextField()
-    session = models.CharField()
+    session_start = models.DateTimeField()
+    session_end = models.DateTimeField()
     college = models.IntegerField()
     department = models.IntegerField()
     teacher = models.IntegerField()

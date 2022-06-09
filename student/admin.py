@@ -10,10 +10,14 @@ class StudentModelAdmin(admin.ModelAdmin):
     list_display = [
         'student_name',
         'class_rollno',
-        'batch',
+        'created_on',
     ]
 
     search_fields = [
-        'student_name',
+        'student_first_name',
+        'student_last_name',
         'class_rollno',
     ]
+
+    def student_name(self, obj):
+        return '{} {}'.format(obj.first_name, obj.last_name)

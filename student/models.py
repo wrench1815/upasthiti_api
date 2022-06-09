@@ -8,7 +8,7 @@ class StudentModel(models.Model):
     student_last_name = models.TextField()
     class_rollno = models.IntegerField()
     email = models.EmailField()
-    phone_no = models.IntegerField(max_length=15)
+    phone_no = models.CharField(max_length=15)
     profile_image = models.URLField()
     courses = models.IntegerField()
     department = models.IntegerField()
