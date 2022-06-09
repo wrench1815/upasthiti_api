@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 class CourseModel(models.Model):
@@ -9,6 +9,7 @@ class CourseModel(models.Model):
     course_code = models.CharField(max_length=50)
     teacher_assigned = models.IntegerField()
     is_practical = models.BooleanField(default=False)
+    classes = models.IntegerField(default=timezone.now)
 
     class Meta:
         '''Meta definition for course.'''

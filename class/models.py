@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.utils import timezone
 
 class ClassModel(models.Model):
     """Model definition for ClassModel."""
-    #todo Pavitr rista (relations)
+
     name = models.TextField()
     session = models.CharField()
     college = models.IntegerField()
@@ -11,7 +11,7 @@ class ClassModel(models.Model):
     teacher = models.IntegerField()
     course = models.IntegerField()
     student = models.IntegerField()
-    created_on = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
         """Meta definition for ClassModel."""

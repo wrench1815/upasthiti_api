@@ -4,13 +4,11 @@ from django.utils import timezone
 
 class CollegeModel(models.Model):
     '''
-        Model Definistion for CollegeModel
+        Model Definition for CollegeModel
     '''
     institute_name = models.TextField()
     institute_address = models.TextField()
     institute_alias_name = models.TextField()
-    #todo: discussion about this field
-    #TODO: Add relations
     institute_principal = models.IntegerField()
     institute_logo = models.URLField()
     institute_website = models.URLField()
@@ -20,7 +18,7 @@ class CollegeModel(models.Model):
         blank=True,
     )
     location =models.IntegerField()
-    created_on = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
         '''

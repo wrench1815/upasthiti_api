@@ -1,16 +1,15 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models her
 class DepartmentModel(models.Model):
     '''Model definition for DepartmentModel.'''
 
-    #TODO: Add relations
     department_name = models.TextField()
     hod = models.IntegerField()
     Teacher = models.IntegerField()
     Courses = models.IntegerField()
-    created_on = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField(default=timezone.now)
     class Meta:
         '''Meta definition for DepartmentModel.'''
 

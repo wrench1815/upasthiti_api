@@ -1,9 +1,9 @@
 from django.db import models
+from django.utils import timezone
 
 
 class StudentModel(models.Model):
     '''Model definition for StudentModel.'''
-    #Todo add relations
     student_first_name = models.TextField()
     student_last_name = models.TextField()
     class_rollno = models.IntegerField()
@@ -14,7 +14,7 @@ class StudentModel(models.Model):
     department = models.IntegerField()
     classes = models.IntegerField()
     attendance = models.IntegerField()
-    created_on = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
         '''Meta definition for StudentModel.'''
