@@ -9,8 +9,8 @@ class AttendanceModel(models.Model):
     is_absent = models.BooleanField()
     is_last = models.BooleanField()
     date = models.DateTimeField()
-    student = models.IntegerField()
-    classes = models.IntegerField()
+    student = models.IntegerField(null=True)
+    classes = models.IntegerField(null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:

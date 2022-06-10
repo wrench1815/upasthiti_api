@@ -7,12 +7,11 @@ class ClassesModel(models.Model):
 
     class_name = models.TextField()
     session = models.CharField(max_length=4)
-    college = models.IntegerField()
-    department = models.IntegerField()
-    course = models.IntegerField()
-    teacher = models.IntegerField()
-    student = models.IntegerField()
-
+    college = models.IntegerField(null=True)
+    department = models.IntegerField(null=True)
+    course = models.IntegerField(null=True)
+    teacher = models.IntegerField(null=True)
+    student = models.IntegerField(null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:

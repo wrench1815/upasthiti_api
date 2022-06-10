@@ -8,9 +8,9 @@ class CourseModel(models.Model):
 
     course_name = models.TextField()
     course_code = models.CharField(max_length=50)
-    teacher_assigned = models.IntegerField()
+    teacher_assigned = models.IntegerField(null=True)
     is_practical = models.BooleanField(default=False)
-    classes = models.IntegerField()
+    classes = models.IntegerField(null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
