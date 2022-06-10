@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'college',
     'api',
     'department',
-    'class',
+    'classes',
     'attendance',
     'authlogic',
 ]

@@ -17,7 +17,7 @@ class CollegeModel(models.Model):
         ('email address'),
         blank=True,
     )
-    location =models.IntegerField()
+    location = models.IntegerField(blank=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:

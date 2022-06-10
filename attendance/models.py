@@ -1,17 +1,17 @@
 from django.db import models
 from django.utils import timezone
 
+
 class AttendanceModel(models.Model):
     """Model definition for AttendanceModel."""
-    
-    is_present=models.BooleanField()
-    is_absent=models.BooleanField()
-    is_last=models.BooleanField()
-    date=models.DateTimeField()
-    student=models.IntegerField()
-    classes = models.IntegerField(default=timezone.now)
 
-
+    is_present = models.BooleanField()
+    is_absent = models.BooleanField()
+    is_last = models.BooleanField()
+    date = models.DateTimeField()
+    student = models.IntegerField()
+    classes = models.IntegerField()
+    created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
         """Meta definition for AttendanceModel."""
