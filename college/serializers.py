@@ -4,7 +4,7 @@ from . import models
 
 class CollegeFullSerializer(serializers.ModelSerializer):
     '''
-        Serializer to Add College
+        Serializer to Display College Data
     '''
 
     class Meta:
