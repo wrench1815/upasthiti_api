@@ -3,7 +3,27 @@ from . import models
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to Display Student Data
+    '''
 
     class Meta:
         model = models.StudentModel
         fields = '__all__'
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to Add and Edit Student Data
+    '''
+
+    class Meta:
+        model = models.StudentModel
+        exclude = [
+            'pk',
+            'created_on',
+        ]
+
+    # Todo: janch partal(valaidation)
+    def validate(self, attrs):
+        return super().validate(attrs)
