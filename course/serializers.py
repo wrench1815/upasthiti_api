@@ -4,6 +4,7 @@ from . import models
 
 class CourseFullSerializer(serializers.ModelSerializer):
     '''
+        Serializer to display course data
         
     '''
 
@@ -14,6 +15,15 @@ class CourseFullSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
 
+    '''
+        serializer to add and edit data
+    '''
     class Meta:
         model = models.CourseModel
-        fields = '__all__'
+        exclude = [
+            'pk',
+            'created_on',
+        ]
+    # todo: add validation
+    def validate(self, attrs):
+        return super().validate(attrs)
