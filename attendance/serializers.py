@@ -24,6 +24,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'created_on',
         ]
     
-    # todo: janch partal(validation)
+    # todo: Humara Validation Kendr
     def validate(self, attrs):
         return super().validate(attrs)
