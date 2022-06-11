@@ -1,3 +1,7 @@
+| Service   | main                                                                                                                                                              | dev                                                                                                                                                              |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CI Status | [![Django CI](https://github.com/wrench1815/upasthiti_api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wrench1815/upasthiti_api/actions/workflows/ci.yml) | [![Django CI](https://github.com/wrench1815/upasthiti_api/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/wrench1815/upasthiti_api/actions/workflows/ci.yml) |
+
 # Upasthiti
 
 ## Dont forget to setup .env file
