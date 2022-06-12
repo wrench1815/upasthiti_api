@@ -15,6 +15,9 @@ from user import views as UserViews
 #? Auth
 from authlogic import views as AuthViews
 
+#? Attendance
+from attendance import views as AttenViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -47,4 +50,9 @@ urlpatterns = [
 
     #? Auth
     path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),
+
+    #? Attendance
+    path('attendance/',
+         AttenViews.AttendanceListCreateAPIView.as_view(),
+         name='attendance-list-create'),
 ]
