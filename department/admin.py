@@ -8,12 +8,10 @@ class DepartmentModelAdmin(admin.ModelAdmin):
     '''Admin View for DepartmentModel'''
 
     list_display = [
-        'department_code',
         'department_name',
-        'programmes_offered',
+        'created_on',
     ]
 
     search_fields = [
         'department_name',
-        'department_code',
     ]

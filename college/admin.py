@@ -10,7 +10,6 @@ class CollegeModelAdmin(admin.ModelAdmin):
     list_display = [
         'institute_name',
         'institute_alias_name',
-        'institute_type',
         'institute_principal',
     ]
 
