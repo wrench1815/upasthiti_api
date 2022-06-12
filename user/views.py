@@ -184,3 +184,15 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class UsersAdminListAPIView(generics.ListAPIView):
+    '''
+        returns all Admin Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_admin=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
