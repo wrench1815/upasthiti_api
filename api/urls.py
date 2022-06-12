@@ -18,6 +18,10 @@ from authlogic import views as AuthViews
 #? Attendance
 from attendance import views as AttenViews
 
+#? Classes
+
+from classes import views as ClassViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -58,4 +62,12 @@ urlpatterns = [
     path('attendance/<int:pk>/',
          AttenViews.AttendanceRetrieveUpdateDestroyAPIView.as_view(),
          name='attendance-retrieve-update-destroy'),
+
+    #? Classes
+    path('classes/',
+         ClassViews.ClassesListCreateAPIView.as_view(),
+         name='Classes-list-create'),
+    path('Classes/<int:pk>/',
+         ClassViews.ClassesRetrieveUpdateDestroyAPIView.as_view(),
+         name='Classes-retrieve-update-destroy'),
 ]
