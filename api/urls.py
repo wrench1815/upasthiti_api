@@ -50,6 +50,9 @@ urlpatterns = [
     path('user/principal/',
          UserViews.UsersPrincipalListAPIView.as_view(),
          name='user-principal-list'),
+    path('user/teacher/',
+         UserViews.UsersTeacherListAPIView.as_view(),
+         name='user-teacher-list'),
 
     #? Auth
     path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),

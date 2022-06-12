@@ -208,3 +208,15 @@ class UsersPrincipalListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+
+
+class UsersTeacherListAPIView(generics.ListAPIView):
+    '''
+        returns all Teacher Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_teacher=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
