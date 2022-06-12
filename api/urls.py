@@ -47,6 +47,9 @@ urlpatterns = [
     path('user/admin/',
          UserViews.UsersAdminListAPIView.as_view(),
          name='user-admin-list'),
+    path('user/principal/',
+         UserViews.UsersPrincipalListAPIView.as_view(),
+         name='user-principal-list'),
 
     #? Auth
     path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),
