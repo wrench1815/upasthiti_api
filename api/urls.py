@@ -55,4 +55,7 @@ urlpatterns = [
     path('attendance/',
          AttenViews.AttendanceListCreateAPIView.as_view(),
          name='attendance-list-create'),
+    path('attendance/<int:pk>/',
+         AttenViews.AttendanceRetrieveUpdateDestroyAPIView.as_view(),
+         name='attendance-retrieve-update-destroy'),
 ]

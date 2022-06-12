@@ -56,3 +56,91 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_201_CREATED)
+
+
+class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
+    '''
+        Allowed methods: GET, PATCH, DELETE
+
+        GET: Return Attendance of given Id
+        PATCH: Update Attendance of given Id with Validated data provided
+        DELETE: Delete Attendance of given Id
+
+        Note: Updatation on Attendance is done via Partial Update method
+
+        args: pk
+        
+        Accessible by: Admin, Teacher
+    '''
+    queryset = models.AttendanceModel.objects.all()
+    serializer_class = serializers.AttendanceSerializer
+    permission_classes = [
+        permissions.IsAuthenticated & (UserIsAdmin | UserIsTeacher)
+    ]
+    lookup_field = 'pk'
+
+    #? get single Attendance
+    @extend_schema(
+        description=
+        'Returns Single User registered on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            serializers.AttendanceFullSerializer,
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def get(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        serializer = serializers.AttendanceFullSerializer(attendance)
+        return Response(serializer.data)
+
+    #? Update Attendance of given Id
+    @extend_schema(
+        request=serializers.AttendanceSerializer,
+        description=
+        'Updates the Attendance of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Attendance Updated Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def patch(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        serializer = serializers.AttendanceSerializer(
+            attendance,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        response = {'detail': 'Attendance Updated Sucecssfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
+
+    #? Delete Attendance of given Id
+    @extend_schema(
+        description=
+        'Deletes the Attendance of the given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Attdendance Deleted Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def delete(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        attendance.delete()
+
+        response = {'detail': 'Attendance Deleted Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
