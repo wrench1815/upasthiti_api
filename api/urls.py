@@ -26,6 +26,10 @@ from classes import views as ClassViews
 
 from college import views as CollegeViews
 
+#? Course
+
+from course import views as CourseViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -82,4 +86,12 @@ urlpatterns = [
     path('college/<int:pk>/',
          CollegeViews.CollegeRetrieveUpdateDestroyAPIView.as_view(),
          name='College-retrieve-update-destroy'),
+
+    #? Course
+    path('course/',
+         CourseViews.CourseListCreateAPIView.as_view(),
+         name='Course-list-create'),
+    path('course/<int:pk>/',
+         CourseViews.CourseRetrieveUpdateDestroyAPIView.as_view(),
+         name='Course-retrieve-update-destroy'),
 ]
