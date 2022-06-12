@@ -20,10 +20,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.AttendanceModel
         exclude = [
-            'pk',
             'created_on',
         ]
-    
+
     # todo: Humara Validation Kendr
     def validate(self, attrs):
         return super().validate(attrs)
