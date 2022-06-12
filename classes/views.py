@@ -82,7 +82,7 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? get single Class(s)
     @extend_schema(
         description=
-        'Returns Single User registered on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, HOD, Teacher',
+        'Returns Single Classes on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, HOD, Teacher',
         responses={
             #? 200
             status.HTTP_200_OK:

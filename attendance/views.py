@@ -82,7 +82,7 @@ class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? get single Attendance
     @extend_schema(
         description=
-        'Returns Single User registered on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        'Returns Single Attendance on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
         responses={
             #? 200
             status.HTTP_200_OK:

@@ -54,3 +54,89 @@ class CollegeListCreateAPIView(generics.ListCreateAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_201_CREATED)
+
+
+class CollegeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
+    '''
+        Allowed methods: GET, PATCH, DELETE
+
+        GET: Return College of given Id
+        PATCH: Update College of given Id with Validated data provided
+        DELETE: Delete College of given Id
+
+        Note: Updatation on Collge is done via Partial Update method
+
+        args: pk
+        
+        Accessible by: Admin
+    '''
+    queryset = models.CollgeModel.objects.all()
+    serializer_class = serializers.CollegeSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
+
+    #? get single Collge
+    @extend_schema(
+        description=
+        'Returns Single College on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            serializers.CollegeFullSerializer,
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def get(self, request, *args, **kwargs):
+        college = self.get_object()
+        serializer = serializers.CollegeFullSerializer(college)
+        return Response(serializer.data)
+
+    #? Update College of given Id
+    @extend_schema(
+        request=serializers.CollegeSerializer,
+        description=
+        'Updates the College of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='College Updated Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def patch(self, request, *args, **kwargs):
+        college = self.get_object()
+        serializer = serializers.CollegeSerializer(
+            college,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        response = {'detail': 'College Updated Sucecssfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
+
+    #? Delete college of given Id
+    @extend_schema(
+        description=
+        'Deletes the College of the given Id.\n\nargs: pk\n\nAccessible by: Admin',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='College Deleted Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        })
+    def delete(self, request, *args, **kwargs):
+        college = self.get_object()
+        college.delete()
+
+        response = {'detail': 'College Deleted Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
