@@ -21,7 +21,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CourseModel
         exclude = [
-            'pk',
+           
             'created_on',
         ]
     # todo: add validation

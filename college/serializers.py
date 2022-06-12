@@ -19,7 +19,7 @@ class CollegeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CollegeModel
         exclude = [
-            'pk',
+            
             'created_on',
         ]
     # todo: add validation
