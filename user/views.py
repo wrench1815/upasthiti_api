@@ -184,3 +184,51 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class UsersAdminListAPIView(generics.ListAPIView):
+    '''
+        returns all Admin Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_admin=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
+
+
+class UsersPrincipalListAPIView(generics.ListAPIView):
+    '''
+        returns all Principal Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_principal=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
+
+
+class UsersTeacherListAPIView(generics.ListAPIView):
+    '''
+        returns all Teacher Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_teacher=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
+
+
+class UsersHodListAPIView(generics.ListAPIView):
+    '''
+        returns all HOD Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_hod=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'

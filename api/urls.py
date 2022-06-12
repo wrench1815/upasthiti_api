@@ -44,6 +44,18 @@ urlpatterns = [
     path('user/update_password/<int:pk>/',
          UserViews.UserPasswordUpdateAPIView.as_view(),
          name='user-password-update'),
+    path('user/admin/',
+         UserViews.UsersAdminListAPIView.as_view(),
+         name='user-admin-list'),
+    path('user/principal/',
+         UserViews.UsersPrincipalListAPIView.as_view(),
+         name='user-principal-list'),
+    path('user/teacher/',
+         UserViews.UsersTeacherListAPIView.as_view(),
+         name='user-teacher-list'),
+    path('user/hod/',
+         UserViews.UsersHodListAPIView.as_view(),
+         name='user-hod-list'),
 
     #? Auth
     path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),
