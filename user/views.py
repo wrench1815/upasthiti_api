@@ -220,3 +220,15 @@ class UsersTeacherListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+
+
+class UsersHodListAPIView(generics.ListAPIView):
+    '''
+        returns all HOD Users
+
+        Accessible by: Admin
+    '''
+    queryset = User.objects.filter(is_hod=True)
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
