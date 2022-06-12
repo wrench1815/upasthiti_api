@@ -70,7 +70,7 @@ class CollegeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         
         Accessible by: Admin
     '''
-    queryset = models.CollgeModel.objects.all()
+    queryset = models.CollegeModel.objects.all()
     serializer_class = serializers.CollegeSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
