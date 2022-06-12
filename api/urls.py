@@ -34,6 +34,10 @@ from course import views as CourseViews
 
 from department import views as DeptViews
 
+#? Student
+
+from student import views as StudViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
