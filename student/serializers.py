@@ -2,7 +2,7 @@ from rest_framework import serializers
 from . import models
 
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentFullSerializer(serializers.ModelSerializer):
     '''
         Serializer to Display Student Data
     '''
