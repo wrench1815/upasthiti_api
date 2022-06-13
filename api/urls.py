@@ -83,7 +83,7 @@ urlpatterns = [
     path('classes/',
          ClassViews.ClassesListCreateAPIView.as_view(),
          name='Classes-list-create'),
-    path('Classes/<int:pk>/',
+    path('classes/<int:pk>/',
          ClassViews.ClassesRetrieveUpdateDestroyAPIView.as_view(),
          name='Classes-retrieve-update-destroy'),
 
@@ -107,14 +107,14 @@ urlpatterns = [
     path('department/',
          DeptViews.DepartmentListCreateAPIView.as_view(),
          name='Department-list-create'),
-    path('Department/<int:pk>/',
+    path('department/<int:pk>/',
          DeptViews.DepartmentRetrieveUpdateDestroyAPIView.as_view(),
          name='Department-retrieve-update-destroy'),
     #? Student
     path('student/',
          StudViews.StudentListCreateAPIView.as_view(),
          name='Student-list-create'),
-    path('Student/<int:pk>/',
+    path('student/<int:pk>/',
          StudViews.StudentRetrieveUpdateDestroyAPIView.as_view(),
          name='Student-retrieve-update-destroy'),
 ]
