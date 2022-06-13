@@ -7,7 +7,7 @@ class AttendanceModel(models.Model):
 
     is_present = models.BooleanField()
     is_absent = models.BooleanField()
-    is_last = models.BooleanField()
+    is_late = models.BooleanField()
     date = models.DateTimeField()
     student = models.IntegerField(null=True)
     classes = models.IntegerField(null=True)

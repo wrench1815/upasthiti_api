@@ -15,6 +15,29 @@ from user import views as UserViews
 #? Auth
 from authlogic import views as AuthViews
 
+#? Attendance
+from attendance import views as AttenViews
+
+#? Classes
+
+from classes import views as ClassViews
+
+#? College
+
+from college import views as CollegeViews
+
+#? Course
+
+from course import views as CourseViews
+
+#? Department
+
+from department import views as DeptViews
+
+#? Student
+
+from student import views as StudViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -59,4 +82,52 @@ urlpatterns = [
 
     #? Auth
     path('auth/me/', AuthViews.AuthMeApiView.as_view(), name='auth-me'),
+
+    #? Attendance
+    path('attendance/',
+         AttenViews.AttendanceListCreateAPIView.as_view(),
+         name='attendance-list-create'),
+    path('attendance/<int:pk>/',
+         AttenViews.AttendanceRetrieveUpdateDestroyAPIView.as_view(),
+         name='attendance-retrieve-update-destroy'),
+
+    #? Classes
+    path('classes/',
+         ClassViews.ClassesListCreateAPIView.as_view(),
+         name='Classes-list-create'),
+    path('classes/<int:pk>/',
+         ClassViews.ClassesRetrieveUpdateDestroyAPIView.as_view(),
+         name='Classes-retrieve-update-destroy'),
+
+    #? College
+    path('college/',
+         CollegeViews.CollegeListCreateAPIView.as_view(),
+         name='College-list-create'),
+    path('college/<int:pk>/',
+         CollegeViews.CollegeRetrieveUpdateDestroyAPIView.as_view(),
+         name='College-retrieve-update-destroy'),
+
+    #? Course
+    path('course/',
+         CourseViews.CourseListCreateAPIView.as_view(),
+         name='Course-list-create'),
+    path('course/<int:pk>/',
+         CourseViews.CourseRetrieveUpdateDestroyAPIView.as_view(),
+         name='Course-retrieve-update-destroy'),
+
+    #? Department
+    path('department/',
+         DeptViews.DepartmentListCreateAPIView.as_view(),
+         name='Department-list-create'),
+    path('department/<int:pk>/',
+         DeptViews.DepartmentRetrieveUpdateDestroyAPIView.as_view(),
+         name='Department-retrieve-update-destroy'),
+
+    #? Student
+    path('student/',
+         StudViews.StudentListCreateAPIView.as_view(),
+         name='Student-list-create'),
+    path('student/<int:pk>/',
+         StudViews.StudentRetrieveUpdateDestroyAPIView.as_view(),
+         name='Student-retrieve-update-destroy'),
 ]

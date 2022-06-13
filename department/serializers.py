@@ -20,7 +20,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.DepartmentModel
         exclude = [
-            'pk',
             'created_on',
         ]
 

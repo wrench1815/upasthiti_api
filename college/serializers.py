@@ -16,12 +16,13 @@ class CollegeSerializer(serializers.ModelSerializer):
     '''
         Serializer to Create and Edit College
     '''
+
     class Meta:
         model = models.CollegeModel
         exclude = [
-            'pk',
             'created_on',
         ]
+
     # todo: add validation
     def validate(self, attrs):
         return super().validate(attrs)

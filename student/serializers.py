@@ -2,7 +2,7 @@ from rest_framework import serializers
 from . import models
 
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentFullSerializer(serializers.ModelSerializer):
     '''
         Serializer to Display Student Data
     '''
@@ -20,7 +20,6 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StudentModel
         exclude = [
-            'pk',
             'created_on',
         ]
 
