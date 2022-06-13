@@ -20,7 +20,6 @@ class ClassesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ClassesModel
         exclude = [
-            
             'created_on',
         ]
 

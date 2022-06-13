@@ -75,7 +75,7 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     queryset = models.ClassesModel.objects.all()
     serializer_class = serializers.ClassesSerializer
     permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD|UserIsTeacher)
+        permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
     ]
     lookup_field = 'pk'
 
@@ -110,7 +110,7 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             OpenApiResponse(description='Not found')
         })
     def patch(self, request, *args, **kwargs):
-        classes= self.get_object()
+        classes = self.get_object()
         serializer = serializers.ClassesSerializer(
             classes,
             data=request.data,

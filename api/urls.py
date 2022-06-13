@@ -110,6 +110,7 @@ urlpatterns = [
     path('department/<int:pk>/',
          DeptViews.DepartmentRetrieveUpdateDestroyAPIView.as_view(),
          name='Department-retrieve-update-destroy'),
+
     #? Student
     path('student/',
          StudViews.StudentListCreateAPIView.as_view(),
