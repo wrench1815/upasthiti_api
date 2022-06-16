@@ -24,4 +24,4 @@ class StudentModel(models.Model):
 
     def __str__(self):
         '''Unicode representation of StudentModel.'''
-        return self.student_first_name
+        return self.student_name
