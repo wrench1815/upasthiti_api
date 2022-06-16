@@ -40,7 +40,7 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
         },
         description='Creates a new Student Object.')
     def post(self, request, *args, **kwargs):
-        serializer = serializers.AttendanceSerializer(data=request.data)
+        serializer = serializers.StudentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         try:
