@@ -122,6 +122,12 @@ urlpatterns = [
     path('department/<int:pk>/',
          DeptViews.DepartmentRetrieveUpdateDestroyAPIView.as_view(),
          name='Department-retrieve-update-destroy'),
+    path('department-type/',
+         DeptViews.DepartmentTypeListCreateAPIView.as_view(),
+         name='Department-type-list-create'),
+    path('department-type/<int:pk>/',
+         DeptViews.DepartmentTypeRetrieveUpdateDestroyAPIView.as_view(),
+         name='Department-type-list-create'),
 
     #? Student
     path('student/',

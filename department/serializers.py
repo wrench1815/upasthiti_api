@@ -6,6 +6,8 @@ class DepartmentFullSerializer(serializers.ModelSerializer):
     '''
         Serializer to display Department Data
     '''
+    department_name = serializers.CharField(
+        source='department_name.department_name')
 
     class Meta:
         model = models.DepartmentModel
@@ -26,3 +28,15 @@ class DepartmentSerializer(serializers.ModelSerializer):
     # Todo : janch partal(validation)
     def validate(self, attrs):
         return super().validate(attrs)
+
+
+class DepartmentTypeSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to Add, Edit and List Department Types Data
+    '''
+
+    class Meta:
+        model = models.DepartmentTypeModel
+        exclude = [
+            'created_on',
+        ]

@@ -6,7 +6,8 @@ from django.utils import timezone
 class DepartmentModel(models.Model):
     '''Model definition for DepartmentModel.'''
 
-    department_name = models.TextField()
+    department_name = models.ForeignKey('DepartmentTypeModel',
+                                        on_delete=models.CASCADE)
     hod = models.IntegerField(null=True)
     Teacher = models.IntegerField(null=True)
     Courses = models.IntegerField(null=True)
@@ -20,4 +21,21 @@ class DepartmentModel(models.Model):
 
     def __str__(self):
         '''Unicode representation of DepartmentModel.'''
-        return self.department_name
+        return str(self.department_name.department_name)
+
+
+class DepartmentTypeModel(models.Model):
+    '''Model definition for DepartmentTypeModel.'''
+
+    department_name = models.TextField(unique=True)
+    created_on = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        '''Meta definition for DepartmentTypeModel.'''
+
+        verbose_name = 'Department Type'
+        verbose_name_plural = 'Department Types'
+
+    def __str__(self):
+        '''Unicode representation of DepartmentTypeModel.'''
+        return str(self.department_name)
