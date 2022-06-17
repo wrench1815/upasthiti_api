@@ -22,6 +22,12 @@ class StudentModel(models.Model):
         verbose_name = 'student'
         verbose_name_plural = 'students'
 
-    def __str__(self):
-        '''Unicode representation of StudentModel.'''
-        return self.student_name
+    def __str__(self) -> str:
+        return self.get_full_name()
+
+    def get_full_name(self):
+        '''
+            return full name of the student
+            format: '<student_first_name> <student_last_name>'
+        '''
+        return str(f'{self.student_first_name} {self.student_last_name}')
