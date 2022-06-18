@@ -154,7 +154,7 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
         Accessible by: Admin, Principal
     '''
     queryset = models.DepartmentTypeModel.objects.all()
-    serializer_class = serializers.DepartmentTypeSerializer
+    serializer_class = serializers.DepartmentTypeFullSerializer
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
     ]
@@ -166,7 +166,7 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
         responses={
             #? 200
             status.HTTP_200_OK:
-            serializers.DepartmentTypeSerializer,
+            serializers.DepartmentTypeFullSerializer,
             #? 404
             status.HTTP_404_NOT_FOUND:
             OpenApiResponse(description='Not found')
@@ -189,7 +189,20 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
         'Creates a new Department Type Object.\n\nAccessible by: Admin, Teacher'
     )
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        serializer = serializers.DepartmentTypeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.save()
+        except Exception as ex:
+            logger.error(str(ex))
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'Department Type Added Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
@@ -227,7 +240,7 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         })
     def get(self, request, *args, **kwargs):
         department_type = self.get_object()
-        serializer = serializers.DepartmentTypeSerializer(department_type)
+        serializer = serializers.DepartmentTypeFullSerializer(department_type)
 
         return Response(serializer.data)
 
