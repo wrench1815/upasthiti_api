@@ -49,3 +49,4 @@ class DepartmentTypeFullSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.DepartmentTypeModel
+        fields = '__all__'
