@@ -16,7 +16,8 @@ class DepartmentModel(models.Model):
     course = models.IntegerField(null=True)
     college = models.ForeignKey(CollegeModel,
                                 on_delete=models.CASCADE,
-                                related_name='department')
+                                related_name='department',
+                                null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
