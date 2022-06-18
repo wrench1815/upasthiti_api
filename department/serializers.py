@@ -32,7 +32,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class DepartmentTypeSerializer(serializers.ModelSerializer):
     '''
-        Serializer to Add, Edit and List Department Types Data
+        Serializer to Add and Edit Department Type Data
     '''
 
     class Meta:
@@ -40,3 +40,12 @@ class DepartmentTypeSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
         ]
+
+
+class DepartmentTypeFullSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to Add, Edit and List Department Type Data
+    '''
+
+    class Meta:
+        model = models.DepartmentTypeModel
