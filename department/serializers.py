@@ -12,6 +12,7 @@ class DepartmentFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.DepartmentModel
         fields = '__all__'
+        depth = 1
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
