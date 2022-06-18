@@ -9,8 +9,8 @@ class DepartmentModel(models.Model):
     department_name = models.ForeignKey('DepartmentTypeModel',
                                         on_delete=models.CASCADE)
     hod = models.IntegerField(null=True)
-    Teacher = models.IntegerField(null=True)
-    Courses = models.IntegerField(null=True)
+    teacher = models.IntegerField(null=True)
+    course = models.IntegerField(null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
