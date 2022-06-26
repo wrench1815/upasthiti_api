@@ -58,12 +58,12 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
-class StudentBulkCreateAPIView(generics.GenericAPIView):
+class StudentBulkCreateAPIView(generics.CreateAPIView):
     '''
         Allowed methods: Bulk Post
 
         
-        POST: Creates a new Student object
+        POST: Bulk Creates Student objects
 
         Accessible by: Admin, HOD, Teacher
     '''
@@ -86,10 +86,20 @@ class StudentBulkCreateAPIView(generics.GenericAPIView):
         },
         description='Bulk Create Student Objects.')
     def post(self, request, *args, **kwargs):
-        serializer = serializers.StudentSerializer(data=request.data,many=True)
+        serializer = serializers.StudentSerializer(
+            data=request.data,
+            many=True,
+        )
         serializer.is_valid(raise_exception=True)
 
         try:
+            # dataset = serializer.data[:]
+
+            # # Perform creations
+            # ret = []
+
+            # for data in dataset():
+            #     ret.append(self.child.create(data))
             serializer.save()
 
         except Exception as ex:
