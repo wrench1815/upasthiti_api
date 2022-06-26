@@ -19,24 +19,23 @@ from authlogic import views as AuthViews
 from attendance import views as AttenViews
 
 #? Classes
-
 from classes import views as ClassViews
 
 #? College
-
 from college import views as CollegeViews
 
 #? Course
-
 from course import views as CourseViews
 
 #? Department
-
 from department import views as DeptViews
 
 #? Student
-
 from student import views as StudViews
+
+#? image upload
+
+from .views import ImageUploadAPIView
 
 urlpatterns = [
     #? Auth Routes
@@ -136,4 +135,7 @@ urlpatterns = [
     path('student/<int:pk>/',
          StudViews.StudentRetrieveUpdateDestroyAPIView.as_view(),
          name='Student-retrieve-update-destroy'),
+
+    #? Image Upload
+    path('image-upload/', ImageUploadAPIView.as_view(), name='image-upload'),
 ]
