@@ -422,6 +422,9 @@ LOGGING = {
     },
 }
 
+#? max request size check
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+
 #? Cloudinary Config
 cloudinary.config(
     cloud_name=env.str('CLOUDINARY_CLOUD_NAME'),
