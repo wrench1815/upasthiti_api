@@ -5,6 +5,9 @@ MAX_UPLOAD_SIZE = 3145728
 
 
 class ImageUploadSerializer(serializers.Serializer):
+    '''
+        Serializer to Upload Images and delete when needed
+    '''
     image = serializers.ImageField(required=True)
     folder = serializers.CharField(required=True)
     public_id = serializers.CharField(required=False)
