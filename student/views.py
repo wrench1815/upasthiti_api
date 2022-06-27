@@ -185,13 +185,7 @@ class StudentBulkCreateAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         try:
-            # dataset = serializer.data[:]
 
-            # # Perform creations
-            # ret = []
-
-            # for data in dataset():
-            #     ret.append(self.child.create(data))
             serializer.save()
 
         except Exception as ex:
