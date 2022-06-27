@@ -12,12 +12,26 @@ class StudentFullSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class StudentBulkSerializer(serializers.ListSerializer):
+    '''
+        Parent Serializer for studentSerializer 
+        Used for Bulk Posting objects
+    '''
+
+    def create(self, validated_data):
+
+        studentlist = [models.StudentModel(**item) for item in validated_data]
+        return models.StudentModel.objects.bulk_create(studentlist)
+
+
 class StudentSerializer(serializers.ModelSerializer):
     '''
         Serializer to Add and Edit Student Data
     '''
 
     class Meta:
+        #? Nesting Serializer
+        list_serializer_class = StudentBulkSerializer
         model = models.StudentModel
         exclude = [
             'created_on',

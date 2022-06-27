@@ -38,7 +38,9 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse({})
         },
-        description='Creates a new Student Object.')
+        description=
+        'Allowed methods: GET, POST \n\nPOST: Creates a new Student object\n\nAccessible by: Admin, HOD, Teacher',
+    )
     def post(self, request, *args, **kwargs):
         serializer = serializers.StudentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -144,3 +146,55 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class StudentBulkCreateAPIView(generics.CreateAPIView):
+    '''
+        Allowed methods: Bulk Post
+
+        
+        POST: Bulk Creates Student objects
+
+        Accessible by: Admin, HOD, Teacher
+    '''
+    queryset = models.StudentModel.objects.all()
+    serializer_class = serializers.StudentFullSerializer
+    permission_classes = [
+        permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
+    ]
+
+    #? Bulk Create Student Objects
+    @extend_schema(
+        request=serializers.StudentSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(description='Students Added Successfully'),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse({})
+        },
+        description=
+        'Bulk Post Students \n\nPOST: Bulk Creates Student objects \n\nAccessible by: Admin, HOD, Teacher',
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.StudentSerializer(
+            data=request.data,
+            many=True,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        try:
+
+            serializer.save()
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'Students Added Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_201_CREATED)
