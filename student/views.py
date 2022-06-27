@@ -58,62 +58,6 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
-class StudentBulkCreateAPIView(generics.CreateAPIView):
-    '''
-        Allowed methods: Bulk Post
-
-        
-        POST: Bulk Creates Student objects
-
-        Accessible by: Admin, HOD, Teacher
-    '''
-    queryset = models.StudentModel.objects.all()
-    serializer_class = serializers.StudentFullSerializer
-    permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
-    ]
-
-    #? Bulk Create Student Objects
-    @extend_schema(
-        request=serializers.StudentSerializer,
-        responses={
-            #? 201
-            status.HTTP_201_CREATED:
-            OpenApiResponse(description='Students Added Successfully'),
-            #? 400
-            status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse({})
-        },
-        description='Bulk Create Student Objects.')
-    def post(self, request, *args, **kwargs):
-        serializer = serializers.StudentSerializer(
-            data=request.data,
-            many=True,
-        )
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            # dataset = serializer.data[:]
-
-            # # Perform creations
-            # ret = []
-
-            # for data in dataset():
-            #     ret.append(self.child.create(data))
-            serializer.save()
-
-        except Exception as ex:
-            logger.error(str(ex))
-
-            return Response({'detail': str(ex)},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        response = {'detail': 'Students Added Successfully'}
-        logger.info(response)
-
-        return Response(response, status=status.HTTP_201_CREATED)
-
-
 class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
@@ -200,3 +144,59 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class StudentBulkCreateAPIView(generics.CreateAPIView):
+    '''
+        Allowed methods: Bulk Post
+
+        
+        POST: Bulk Creates Student objects
+
+        Accessible by: Admin, HOD, Teacher
+    '''
+    queryset = models.StudentModel.objects.all()
+    serializer_class = serializers.StudentFullSerializer
+    permission_classes = [
+        permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
+    ]
+
+    #? Bulk Create Student Objects
+    @extend_schema(
+        request=serializers.StudentSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(description='Students Added Successfully'),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse({})
+        },
+        description='Bulk Create Student Objects.')
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.StudentSerializer(
+            data=request.data,
+            many=True,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            # dataset = serializer.data[:]
+
+            # # Perform creations
+            # ret = []
+
+            # for data in dataset():
+            #     ret.append(self.child.create(data))
+            serializer.save()
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'Students Added Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_201_CREATED)
