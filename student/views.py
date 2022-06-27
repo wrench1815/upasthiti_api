@@ -38,7 +38,9 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse({})
         },
-        description='Creates a new Student Object.')
+        description=
+        'Allowed methods: GET, POST \n\nPOST: Creates a new Student object\n\nAccessible by: Admin, HOD, Teacher',
+    )
     def post(self, request, *args, **kwargs):
         serializer = serializers.StudentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -172,7 +174,8 @@ class StudentBulkCreateAPIView(generics.CreateAPIView):
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse({})
         },
-        description='Bulk Post Students \n\nAccessible by: Admin, HOD, Teacher',
+        description=
+        'Bulk Post Students \n\nPOST: Bulk Creates Student objects \n\nAccessible by: Admin, HOD, Teacher',
     )
     def post(self, request, *args, **kwargs):
         serializer = serializers.StudentSerializer(
