@@ -172,7 +172,8 @@ class StudentBulkCreateAPIView(generics.CreateAPIView):
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse({})
         },
-        description='Bulk Create Student Objects.')
+        description='Bulk Post Students \n\nAccessible by: Admin, HOD, Teacher',
+    )
     def post(self, request, *args, **kwargs):
         serializer = serializers.StudentSerializer(
             data=request.data,
