@@ -97,6 +97,7 @@ class TestViews(APITestCase):
         '''
         data = {
             'profile_image': 'https://i.pravatar.cc/300',
+            'profile_image_public_id': 'public_id',
             'first_name': 'Test',
             'last_name': 'User',
             'email': 'test@email.com',
@@ -130,6 +131,7 @@ class TestViews(APITestCase):
         '''
         data = {
             'profile_image': 'https://i.pravatar.cc/300',
+            'profile_image_public_id': 'public_id',
             'first_name': 'Update',
             'last_name': 'User',
             'email': 'update@user.com',
