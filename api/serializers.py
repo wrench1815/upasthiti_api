@@ -10,7 +10,7 @@ class ImageUploadSerializer(serializers.Serializer):
     '''
     image = serializers.ImageField(required=True)
     folder = serializers.CharField(required=True)
-    public_id = serializers.CharField(required=False)
+    public_id = serializers.CharField(allow_blank=True)
 
     def validate_image(self, value):
         '''
