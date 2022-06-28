@@ -38,6 +38,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'profile_image',
+            'profile_image_public_id',
             'first_name',
             'last_name',
             'email',
@@ -67,6 +68,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'profile_image',
+            'profile_image_public_id',
             'first_name',
             'last_name',
             'email',
