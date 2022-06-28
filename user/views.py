@@ -1,6 +1,7 @@
 import logging
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 
 from django.contrib.auth import get_user_model
 
@@ -14,6 +15,39 @@ User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        request=UserCreateSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(description='User Created Successfully', ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Create a new user.'),
+    get=extend_schema(
+        request=UserSerializer,
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Users List',
+                response=UserSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Returns list of all Users.'),
+)
 class UserListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
@@ -28,14 +62,13 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
 
     #? Create a new User
-    @extend_schema(request=UserCreateSerializer,
-                   responses=UserCreateSerializer)
     def post(self, request, *args, **kwargs):
         serializer = UserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         try:
             User.objects.get_or_create(
+                profile_image=serializer.validated_data['profile_image'],
                 first_name=serializer.validated_data['first_name'],
                 last_name=serializer.validated_data['last_name'],
                 email=serializer.validated_data['email'],
@@ -59,6 +92,71 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description=
+        'Returns Single User registered on Application of given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='User Details',
+                response=UserSerializer,
+            ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    patch=extend_schema(
+        request=UserUpdateSerializer,
+        description=
+        'Updates the User of given Id with the provided Data.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='User Updated Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    delete=extend_schema(
+        description='Deletes the User of the given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='User Deleted Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+)
 class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
@@ -79,35 +177,12 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     lookup_field = 'pk'
 
     #? get single User
-    @extend_schema(
-        description=
-        'Returns Single User registered on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            UserSerializer,
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     #? Update User of given Id
-    @extend_schema(
-        request=UserUpdateSerializer,
-        description=
-        'Updates the User of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='User Updated Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = UserUpdateSerializer(user,
@@ -122,17 +197,6 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
     #? Delete User of given Id
-    @extend_schema(
-        description=
-        'Deletes the User of the given Id.\n\nargs: pk\n\nAccessible by: Admin',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='User Deleted Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def delete(self, request, *args, **kwargs):
         user = self.get_object()
         user.delete()
@@ -143,6 +207,29 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='User Password Updated Successfully', ),
+
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='User not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        operation_id='user_password_update'), )
 class UserPasswordUpdateAPIView(generics.GenericAPIView):
     '''
         Updates the Password of User of given Id.
@@ -154,22 +241,6 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
 
-    @extend_schema(
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='User Password Updated Successfully'),
-
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='User not found'),
-
-            #? 400
-            status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse(
-                description='Confirm Password does not match Password')
-        },
-        operation_id='user_password_update')
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -186,6 +257,23 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description='Returns list of all Admin Users.',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Admin List',
+                response=UserSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }), )
 class UsersAdminListAPIView(generics.ListAPIView):
     '''
         returns all Admin Users
@@ -198,6 +286,23 @@ class UsersAdminListAPIView(generics.ListAPIView):
     lookup_field = 'pk'
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description='Returns list of all Principal Users.',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Admin List',
+                response=UserSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }), )
 class UsersPrincipalListAPIView(generics.ListAPIView):
     '''
         returns all Principal Users
@@ -210,6 +315,23 @@ class UsersPrincipalListAPIView(generics.ListAPIView):
     lookup_field = 'pk'
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description='Returns list of all Teacher Users.',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Admin List',
+                response=UserSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }), )
 class UsersTeacherListAPIView(generics.ListAPIView):
     '''
         returns all Teacher Users
@@ -222,6 +344,23 @@ class UsersTeacherListAPIView(generics.ListAPIView):
     lookup_field = 'pk'
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description='Returns list of HoD Users.',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Admin List',
+                response=UserSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }), )
 class UsersHodListAPIView(generics.ListAPIView):
     '''
         returns all HOD Users

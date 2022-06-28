@@ -19,6 +19,7 @@ class TestViews(APITestCase):
         self.user_range = 5
 
         self.admin = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='user@mail.com',
             first_name='Test',
             last_name='User',
@@ -29,6 +30,7 @@ class TestViews(APITestCase):
 
         for iter in range(self.user_range):
             User.objects.create(
+                profile_image='https://i.pravatar.cc/300',
                 email=f'user{iter}@mail.com',
                 first_name=f'Test{iter}',
                 last_name='User',
@@ -37,6 +39,7 @@ class TestViews(APITestCase):
             )
 
         self.forbidden_user = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='unauth@mail.com',
             first_name='Test',
             last_name='User',
@@ -45,6 +48,7 @@ class TestViews(APITestCase):
         )
 
         self.destroyable_user = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='destryuser@mail.com',
             first_name='Destroy',
             last_name='User',
@@ -92,6 +96,7 @@ class TestViews(APITestCase):
             Test User Creation
         '''
         data = {
+            'profile_image': 'https://i.pravatar.cc/300',
             'first_name': 'Test',
             'last_name': 'User',
             'email': 'test@email.com',
@@ -124,6 +129,7 @@ class TestViews(APITestCase):
             Test Updating User
         '''
         data = {
+            'profile_image': 'https://i.pravatar.cc/300',
             'first_name': 'Update',
             'last_name': 'User',
             'email': 'update@user.com',

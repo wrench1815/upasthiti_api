@@ -20,6 +20,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(max_length=45, blank=True)
     last_name = models.CharField(max_length=45, blank=True)
+    profile_image = models.URLField(blank=True, null=True)
+    profile_image_public_id = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
     date_added = models.DateTimeField(_('date added'), default=timezone.now)
 

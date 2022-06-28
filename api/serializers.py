@@ -49,3 +49,14 @@ class ImageUploadSerializer(serializers.Serializer):
             raise serializers.ValidationError('No folder provided.')
 
         return value
+
+    def validate_public_id(self, value):
+        '''
+            Validations for public_id
+            
+            Validates if public_id is string if not blank
+        '''
+        if value and not isinstance(value, str):
+            raise serializers.ValidationError('public_id must be a string.')
+
+        return value
