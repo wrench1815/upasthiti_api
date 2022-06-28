@@ -69,6 +69,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         try:
             User.objects.get_or_create(
                 profile_image=serializer.validated_data['profile_image'],
+                profile_image_public_id=serializer.validated_data['profile_image_public_id'],
                 first_name=serializer.validated_data['first_name'],
                 last_name=serializer.validated_data['last_name'],
                 email=serializer.validated_data['email'],
