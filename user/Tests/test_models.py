@@ -11,6 +11,7 @@ class TestModels(TestCase):
 
     def test_User_create(self):
         user = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='test@user.com',
             first_name='Test',
             last_name='User',
@@ -26,6 +27,7 @@ class TestModels(TestCase):
 
     def test_User_update(self):
         user = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='test@user.com',
             first_name='Test',
             last_name='User',
@@ -44,6 +46,7 @@ class TestModels(TestCase):
 
     def test_User_delete(self):
         user = User.objects.create(
+            profile_image='https://i.pravatar.cc/300',
             email='test@user.com',
             first_name='Test',
             last_name='User',
