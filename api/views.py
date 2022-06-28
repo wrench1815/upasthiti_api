@@ -45,6 +45,10 @@ class ImageUploadAPIView(generics.CreateAPIView):
 
     #? upload Image to Cloudinary and return its url
     def post(self, request, *args, **kwargs):
+        # if public_id does not exist in request set public_id to ''
+        if 'public_id' not in request.data:
+            request.data['public_id'] = ''
+
         instance = self.get_serializer(data=request.data)
         instance.is_valid(raise_exception=True)
 
