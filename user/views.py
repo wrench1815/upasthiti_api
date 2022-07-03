@@ -7,9 +7,12 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
 
 from .serializers import UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
 from .permissions import UserIsAdmin
+
+from api.paginator import StandardPagination
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -60,6 +63,10 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = 'date_added'
+    ordering = '-date_added'
 
     #? Create a new User
     def post(self, request, *args, **kwargs):
@@ -69,7 +76,8 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         try:
             User.objects.get_or_create(
                 profile_image=serializer.validated_data['profile_image'],
-                profile_image_public_id=serializer.validated_data['profile_image_public_id'],
+                profile_image_public_id=serializer.
+                validated_data['profile_image_public_id'],
                 first_name=serializer.validated_data['first_name'],
                 last_name=serializer.validated_data['last_name'],
                 email=serializer.validated_data['email'],
@@ -285,6 +293,10 @@ class UsersAdminListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = 'date_added'
+    ordering = '-date_added'
 
 
 @extend_schema_view(
@@ -314,6 +326,10 @@ class UsersPrincipalListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = 'date_added'
+    ordering = '-date_added'
 
 
 @extend_schema_view(
@@ -343,6 +359,10 @@ class UsersTeacherListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = 'date_added'
+    ordering = '-date_added'
 
 
 @extend_schema_view(
@@ -372,3 +392,7 @@ class UsersHodListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = 'date_added'
+    ordering = '-date_added'

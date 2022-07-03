@@ -71,7 +71,7 @@ class TestViews(APITestCase):
         resp = self.client.get(reverse('user-list-create'))
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(resp.data), User.objects.count())
+        self.assertEqual(len(resp.data['results']), User.objects.count())
 
     def test_UserListing_unauthenticated(self):
         '''
