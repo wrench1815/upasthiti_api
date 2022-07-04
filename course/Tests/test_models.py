@@ -1,11 +1,24 @@
+# from rest_framework.test import APITestCase
 # from django.test import TestCase
 # from course import models
+# from user import models
 
-# ! Failed test due to unauthentication error 403
-# class ModelTest(TestCase):
+
+# #! Failed test
+# class ModelTest(APITestCase):
 
 #     @classmethod
 #     def test_course_create(self):
+#         self.testuser1 = models.User.objects.create_superuser(
+#             email='Test@mail.com',
+#             password='123456789',
+#         )
+#         # self.testuser1.is_staff = True
+
+#         self.client.login(
+#             email='Test@mail.com',
+#             password='123456789',
+#         )
 #         test_course = models.CourseModel.objects.create(
 #             course_name='New Course',
 #             course_code='100',
