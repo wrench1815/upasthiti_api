@@ -6,7 +6,7 @@ authors = ["Hardeep Kumar <hardeepkumar1815@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "^4.0.4"
+Django = {extras = ["argon2"], version = "^4.0.6"}
 environs = {extras = ["django"], version = "^9.5.0"}
 dj-database-url = "^0.5.0"
 whitenoise = "^6.1.0"
