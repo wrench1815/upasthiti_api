@@ -74,7 +74,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         try:
-            User.objects.get_or_create(
+            User.objects.create_user(
                 profile_image=serializer.validated_data['profile_image'],
                 profile_image_public_id=serializer.
                 validated_data['profile_image_public_id'],
