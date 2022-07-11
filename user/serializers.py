@@ -10,16 +10,28 @@ class UserSerializer(serializers.ModelSerializer):
     '''
         Serializer for User
     '''
+    # get full name from model User
+    full_name = serializers.CharField(source='get_full_name')
+    short_name = serializers.CharField(source='get_short_name')
 
     class Meta:
         model = User
-        exclude = [
-            'is_staff',
-            'is_superuser',
-            'groups',
-            'password',
-            'last_login',
-            'user_permissions',
+        fields = [
+            'id',
+            'profile_image',
+            'profile_image_public_id',
+            'first_name',
+            'last_name',
+            'full_name',
+            'short_name',
+            'email',
+            'gender',
+            'date_added',
+            'is_active',
+            'is_admin',
+            'is_principal',
+            'is_hod',
+            'is_teacher',
         ]
 
 
