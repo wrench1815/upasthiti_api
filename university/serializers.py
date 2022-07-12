@@ -1,10 +1,9 @@
-from dataclasses import fields
 from rest_framework import serializers
 
 from .models import UniversityModel
 
 
-class UniversitySerializer(serializers.Serializer):
+class UniversitySerializer(serializers.ModelSerializer):
     '''
         Serializer for LIsting University Data
     '''
@@ -14,9 +13,9 @@ class UniversitySerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class UniversityCreateSerializer(serializers.Serializer):
+class UniversityCreateSerializer(serializers.ModelSerializer):
     '''
-        Serializer for LIsting University Data
+        Serializer for Editing and creating a new University
     '''
 
     class Meta:
