@@ -34,8 +34,10 @@ from department import views as DeptViews
 from student import views as StudViews
 
 #? image upload
-
 from .views import ImageUploadAPIView
+
+#? University
+from university import views as UniversityViews
 
 urlpatterns = [
     #? Auth Routes
@@ -141,4 +143,9 @@ urlpatterns = [
 
     #? Image Upload
     path('image-upload/', ImageUploadAPIView.as_view(), name='image-upload'),
+
+    #? University
+    path('university/',
+         UniversityViews.UniversityListCreateAPIView.as_view(),
+         name='university-list-create'),
 ]
