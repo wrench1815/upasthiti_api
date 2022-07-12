@@ -1,3 +1,14 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import UniversityModel
+
+
+@admin.register(UniversityModel)
+class UniversityModelAdmin(admin.ModelAdmin):
+    '''Admin View for UniversityModel'''
+
+    list_display = [
+        'name',
+        'address',
+        'alias',
+    ]
