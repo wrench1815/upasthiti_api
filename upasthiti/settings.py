@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'classes',
     'attendance',
     'authlogic',
+    'university',
 ]
 
 MIDDLEWARE = [
