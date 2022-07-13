@@ -37,7 +37,7 @@ from student import views as StudViews
 from .views import ImageUploadAPIView
 
 #? University
-from university import views as UniversityViews
+from university import views as UniViews
 
 urlpatterns = [
     #? Auth Routes
@@ -98,54 +98,57 @@ urlpatterns = [
          name='Classes-list-create'),
     path('classes/<int:pk>/',
          ClassViews.ClassesRetrieveUpdateDestroyAPIView.as_view(),
-         name='Classes-retrieve-update-destroy'),
+         name='classes-retrieve-update-destroy'),
 
     #? College
     path('college/',
          CollegeViews.CollegeListCreateAPIView.as_view(),
-         name='College-list-create'),
+         name='college-list-create'),
     path('college/<int:pk>/',
          CollegeViews.CollegeRetrieveUpdateDestroyAPIView.as_view(),
-         name='College-retrieve-update-destroy'),
+         name='college-retrieve-update-destroy'),
 
     #? Course
     path('course/',
          CourseViews.CourseListCreateAPIView.as_view(),
-         name='Course-list-create'),
+         name='course-list-create'),
     path('course/<int:pk>/',
          CourseViews.CourseRetrieveUpdateDestroyAPIView.as_view(),
-         name='Course-retrieve-update-destroy'),
+         name='course-retrieve-update-destroy'),
 
     #? Department
     path('department/',
          DeptViews.DepartmentListCreateAPIView.as_view(),
-         name='Department-list-create'),
+         name='department-list-create'),
     path('department/<int:pk>/',
          DeptViews.DepartmentRetrieveUpdateDestroyAPIView.as_view(),
-         name='Department-retrieve-update-destroy'),
+         name='department-retrieve-update-destroy'),
     path('department-type/',
          DeptViews.DepartmentTypeListCreateAPIView.as_view(),
-         name='Department-type-list-create'),
+         name='department-type-list-create'),
     path('department-type/<int:pk>/',
          DeptViews.DepartmentTypeRetrieveUpdateDestroyAPIView.as_view(),
-         name='Department-type-list-create'),
+         name='department-type-list-create'),
 
     #? Student
     path('student/',
          StudViews.StudentListCreateAPIView.as_view(),
-         name='Student-list-create'),
+         name='student-list-create'),
     path('student/bulk',
          StudViews.StudentBulkCreateAPIView.as_view(),
-         name='Student-bulk-create'),
+         name='student-bulk-create'),
     path('student/<int:pk>/',
          StudViews.StudentRetrieveUpdateDestroyAPIView.as_view(),
-         name='Student-retrieve-update-destroy'),
+         name='student-retrieve-update-destroy'),
 
     #? Image Upload
     path('image-upload/', ImageUploadAPIView.as_view(), name='image-upload'),
 
     #? University
     path('university/',
-         UniversityViews.UniversityListCreateAPIView.as_view(),
+         UniViews.UniversityListCreateAPIView.as_view(),
          name='university-list-create'),
+    path('university/<int:pk>/',
+         UniViews.UniversityRetrieveUpdateDestroyAPIView.as_view(),
+         name='university-retrieve-update-destroy'),
 ]

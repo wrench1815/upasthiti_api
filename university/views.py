@@ -84,3 +84,137 @@ class UniversityListCreateAPIView(generics.ListCreateAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_201_CREATED)
+
+
+@extend_schema_view(
+    get=extend_schema(
+        description=
+        'Returns Single Ubiversity registered on Application of given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='University Details',
+                response=serializers.UniversitySerializer,
+            ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    patch=extend_schema(
+        request=serializers.UniversityCreateSerializer,
+        description=
+        'Updates the University of given Id with the provided Data.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='University Updated Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    delete=extend_schema(
+        description='Deletes the University of the given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='University Deleted Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+)
+class UniversityRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
+    '''
+        Allowed methods: GET, PATCH, DELETE
+
+        GET: Return University of given Id
+        PATCH: Update University of given Id with Validated data provided
+        DELETE: Delete University of given Id
+
+        Note: Updatation on University is done via Partial Update method
+
+        args: pk
+        
+        Accessible by: Admin
+    '''
+    queryset = models.UniversityModel.objects.all()
+    serializer_class = serializers.UniversitySerializer
+    permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
+    lookup_field = 'pk'
+
+    #? get single University
+    def get(self, request, *args, **kwargs):
+        university = self.get_object()
+        serializer = serializers.UniversitySerializer(university)
+        return Response(serializer.data)
+
+    #? Update University of given Id
+    def patch(self, request, *args, **kwargs):
+        university = self.get_object()
+
+        try:
+            serializer = serializers.UniversityCreateSerializer(
+                university,
+                data=request.data,
+                partial=True,
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'University Updated Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
+
+    #? Delete University of given Id
+    def delete(self, request, *args, **kwargs):
+        university = self.get_object()
+
+        try:
+
+            university.delete()
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'University Deleted Successfully'}
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_200_OK)
