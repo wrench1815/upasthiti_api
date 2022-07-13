@@ -6,7 +6,7 @@ from django.utils import timezone
 class UniversityModel(models.Model):
     '''Model definition for UniversityModel.'''
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     address = models.TextField()
     alias = models.CharField(max_length=10)
     date_added = models.DateTimeField(default=timezone.now)
