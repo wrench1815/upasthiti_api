@@ -24,4 +24,9 @@ class UniversityCreateSerializer(serializers.ModelSerializer):
             'name',
             'address',
             'alias',
+            'email',
+            'phone_number',
+            'logo',
+            'logo_public_id',
+            'vice_chancelor',
         ]
