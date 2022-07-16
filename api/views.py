@@ -1,4 +1,6 @@
+from collections import OrderedDict
 import logging
+
 import cloudinary.uploader
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
@@ -45,11 +47,14 @@ class ImageUploadAPIView(generics.CreateAPIView):
 
     #? upload Image to Cloudinary and return its url
     def post(self, request, *args, **kwargs):
-        # if public_id does not exist in request set public_id to ''
-        if 'public_id' not in request.data:
-            request.data['public_id'] = ''
+        request_data = OrderedDict()
+        request_data.update(request.data)
 
-        instance = self.get_serializer(data=request.data)
+        # if public_id does not exist in request set public_id to ''
+        if 'public_id' not in request_data:
+            request_data['public_id'] = ''
+
+        instance = self.get_serializer(data=request_data)
         instance.is_valid(raise_exception=True)
 
         try:
