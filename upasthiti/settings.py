@@ -165,9 +165,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #? CORS Settings
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
+# CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
+CORS_ALLOW_ALL_ORIGINS = True
 
-#! Overiding Djang User model with Custom User Model
+#! Overiding Django User model with Custom User Model
 AUTH_USER_MODEL = 'user.User'
 
 # yapf: disable
