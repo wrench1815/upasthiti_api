@@ -2,6 +2,8 @@ from django.db import models
 
 from django.utils import timezone
 
+from api.utils import DISTRICTS_CHOICES
+
 
 class UniversityModel(models.Model):
     '''Model definition for UniversityModel.'''
@@ -9,6 +11,12 @@ class UniversityModel(models.Model):
     name = models.TextField(unique=True)
     address = models.TextField(blank=True, null=True)
     alias = models.CharField(max_length=10)
+    district = models.CharField(
+        choices=DISTRICTS_CHOICES,
+        max_length=11,
+        blank=True,
+        null=True,
+    )
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     logo = models.URLField(blank=True, null=True)
