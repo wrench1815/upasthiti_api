@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',  #? Enable postgres support
     'corsheaders',
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'rest_framework',  #? DRF
-    'cloudinary',  #
+    'cloudinary',  #? Cloudinary
+    'django_filters',  #? django-filter
 
     #? Project Apps
     'user',
