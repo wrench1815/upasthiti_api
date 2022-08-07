@@ -21,6 +21,7 @@ djangorestframework-simplejwt = "^5.2.0"
 cloudinary = "^1.29.0"
 Pillow = "^9.1.1"
 olefile = "^0.46"
+django-filter = "^22.1"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.32.0"

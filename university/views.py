@@ -5,7 +5,9 @@ from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from . import models, serializers
 
@@ -56,15 +58,24 @@ class UniversityListCreateAPIView(generics.ListCreateAPIView):
         GET: Returns list of all University
         POST: Creates a new University
 
+        Filters:
+            district
+
+        Ordering:
+            default: -data_added
+            allowed: date_added, -date_added
+
         Accessible by: Admin
     '''
     queryset = models.UniversityModel.objects.all()
     serializer_class = serializers.UniversitySerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     pagination_class = StandardPagination
-    filter_backends = [OrderingFilter]
-    ordering_fields = 'date_added'
+    filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
+    ordering_fields = ['date_added']
     ordering = '-date_added'
+    search_fields = ['$name'] #? fuzzy search using regex
+    filterset_fields = ['district']
 
     #? Create a new University
     def post(self, request, *args, **kwargs):

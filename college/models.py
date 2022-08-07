@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from api.utils import DISTRICTS_CHOICES
+
 
 class CollegeModel(models.Model):
     '''
@@ -8,6 +10,12 @@ class CollegeModel(models.Model):
     '''
     institute_name = models.TextField()
     institute_address = models.TextField()
+    district = models.CharField(
+        choices=DISTRICTS_CHOICES,
+        max_length=11,
+        blank=True,
+        null=True,
+    )
     institute_alias_name = models.TextField()
     institute_principal = models.IntegerField()
     institute_logo = models.URLField()
