@@ -15,8 +15,7 @@ class StudentModel(models.Model):
     district = models.CharField(
         choices=DISTRICTS_CHOICES,
         max_length=11,
-        blank=True,
-        null=True,
+        default='Jammu',
     )
     profile_image = models.URLField()
     courses = models.IntegerField(null=True)

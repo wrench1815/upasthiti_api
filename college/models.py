@@ -13,8 +13,7 @@ class CollegeModel(models.Model):
     district = models.CharField(
         choices=DISTRICTS_CHOICES,
         max_length=11,
-        blank=True,
-        null=True,
+        default='Jammu',
     )
     institute_alias_name = models.TextField()
     institute_principal = models.IntegerField()
