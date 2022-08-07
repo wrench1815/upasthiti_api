@@ -8,11 +8,11 @@ class CollegeModelAdmin(admin.ModelAdmin):
     '''Admin View for CollegeModel'''
 
     list_display = [
-        'institute_name',
-        'institute_alias_name',
-        'institute_principal',
+        'name',
+        'alias_name',
+        'principal',
     ]
 
     search_fields = [
-        'institute_name',
+        'name',
     ]
