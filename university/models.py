@@ -14,8 +14,7 @@ class UniversityModel(models.Model):
     district = models.CharField(
         choices=DISTRICTS_CHOICES,
         max_length=11,
-        blank=True,
-        null=True,
+        default='Jammu',
     )
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
