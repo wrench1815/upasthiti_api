@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from api.utils import DISTRICTS_CHOICES
+
 
 class StudentModel(models.Model):
     '''Model definition for StudentModel.'''
@@ -9,6 +11,13 @@ class StudentModel(models.Model):
     class_rollno = models.IntegerField()
     email = models.EmailField(null=True)
     phone_no = models.CharField(max_length=15)
+    address = models.TextField(null=True)
+    district = models.CharField(
+        choices=DISTRICTS_CHOICES,
+        max_length=11,
+        blank=True,
+        null=True,
+    )
     profile_image = models.URLField()
     courses = models.IntegerField(null=True)
     department = models.IntegerField(null=True)
