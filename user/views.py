@@ -9,7 +9,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 
-from .serializers import UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+
+from .serializers import HODSerializer, UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
 from .permissions import UserIsAdmin
 
 from api.paginator import StandardPagination
@@ -372,8 +374,8 @@ class UsersTeacherListAPIView(generics.ListAPIView):
             #? 200
             status.HTTP_200_OK:
             OpenApiResponse(
-                description='Admin List',
-                response=UserSerializer,
+                description='HOD List',
+                response=HODSerializer,
             ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
@@ -389,10 +391,14 @@ class UsersHodListAPIView(generics.ListAPIView):
         Accessible by: Admin
     '''
     queryset = User.objects.filter(is_hod=True)
-    serializer_class = UserSerializer
+    serializer_class = HODSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
     pagination_class = StandardPagination
-    filter_backends = [OrderingFilter]
+    filter_backends = [
+        OrderingFilter,
+        DjangoFilterBackend,
+    ]
     ordering_fields = 'date_added'
     ordering = '-date_added'
+    filterset_fields = ['college']

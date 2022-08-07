@@ -1,30 +1,35 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 from api.utils import DISTRICTS_CHOICES
+
+User = get_user_model()
 
 
 class CollegeModel(models.Model):
     '''
         Model Definition for CollegeModel
     '''
-    institute_name = models.TextField()
-    institute_address = models.TextField()
+    name = models.TextField()
+    address = models.TextField()
     district = models.CharField(
         choices=DISTRICTS_CHOICES,
         max_length=11,
         default='Jammu',
     )
-    institute_alias_name = models.TextField()
-    institute_principal = models.IntegerField()
-    institute_logo = models.URLField()
-    institute_website = models.URLField()
-    institute_mobile = models.CharField(max_length=15)
-    institute_email = models.EmailField(
+    alias_name = models.TextField()
+    principal = models.IntegerField()
+    logo = models.URLField()
+    website = models.URLField()
+    mobile = models.CharField(max_length=15)
+    email = models.EmailField(
         ('email address'),
         blank=True,
     )
     created_on = models.DateTimeField(default=timezone.now)
+
+    hod = models.ManyToManyField(User, related_name='college')
 
     class Meta:
         '''
@@ -34,5 +39,5 @@ class CollegeModel(models.Model):
         verbose_name_plural = 'Colleges'
 
     def __str__(self):
-        '''Unicode representation of MODELNAME.'''
-        return str(self.institute_name)
+        '''Unicode representation of CollegeModel.'''
+        return str(self.name)
