@@ -140,3 +140,36 @@ class UserPasswordSerializer(serializers.Serializer):
                 {'error': 'Confirm Password does not match Password'})
 
         return attrs
+
+
+class HODSerializer(serializers.ModelSerializer):
+    '''
+        Serializer for listing HODs
+    '''
+    # get full name from model User
+    full_name = serializers.CharField(source='get_full_name')
+
+    # get short name from model User
+    short_name = serializers.CharField(source='get_short_name')
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'profile_image',
+            'profile_image_public_id',
+            'first_name',
+            'last_name',
+            'full_name',
+            'short_name',
+            'email',
+            'gender',
+            'date_added',
+            'is_active',
+            'is_admin',
+            'is_principal',
+            'is_hod',
+            'is_teacher',
+            'college',
+        ]
+        depth = 1
