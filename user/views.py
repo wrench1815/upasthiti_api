@@ -11,7 +11,7 @@ from rest_framework.filters import OrderingFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .serializers import HODSerializer, UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
+from .serializers import HODSerializer, PrincipalSerializer, UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
 from .permissions import UserIsAdmin
 
 from api.paginator import StandardPagination
@@ -309,7 +309,7 @@ class UsersAdminListAPIView(generics.ListAPIView):
             status.HTTP_200_OK:
             OpenApiResponse(
                 description='Admin List',
-                response=UserSerializer,
+                response=PrincipalSerializer,
             ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
@@ -325,7 +325,7 @@ class UsersPrincipalListAPIView(generics.ListAPIView):
         Accessible by: Admin
     '''
     queryset = User.objects.filter(is_principal=True)
-    serializer_class = UserSerializer
+    serializer_class = PrincipalSerializer
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
     pagination_class = StandardPagination

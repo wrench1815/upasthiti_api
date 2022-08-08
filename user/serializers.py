@@ -32,7 +32,10 @@ class UserSerializer(serializers.ModelSerializer):
             'is_principal',
             'is_hod',
             'is_teacher',
+            'college',
+            'administrated_college',
         ]
+        depth = 1
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -171,5 +174,38 @@ class HODSerializer(serializers.ModelSerializer):
             'is_hod',
             'is_teacher',
             'college',
+        ]
+        depth = 1
+
+
+class PrincipalSerializer(serializers.ModelSerializer):
+    '''
+        Serializer for listing Principals
+    '''
+    # get full name from model User
+    full_name = serializers.CharField(source='get_full_name')
+
+    # get short name from model User
+    short_name = serializers.CharField(source='get_short_name')
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'profile_image',
+            'profile_image_public_id',
+            'first_name',
+            'last_name',
+            'full_name',
+            'short_name',
+            'email',
+            'gender',
+            'date_added',
+            'is_active',
+            'is_admin',
+            'is_principal',
+            'is_hod',
+            'is_teacher',
+            'administrated_college',
         ]
         depth = 1
