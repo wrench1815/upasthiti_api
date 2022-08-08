@@ -9,6 +9,7 @@ class CollegeFullSerializer(serializers.ModelSerializer):
         Serializer to Display College Data
     '''
     hod = UserSerializer(many=True)
+    principal = UserSerializer()
 
     class Meta:
         model = models.CollegeModel
@@ -25,6 +26,7 @@ class CollegeSerializer(serializers.ModelSerializer):
         model = models.CollegeModel
         exclude = [
             'created_on',
+            'hod',
         ]
 
     # todo: add validation
