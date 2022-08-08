@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 from api.utils import DISTRICTS_CHOICES
+from university.models import UniversityModel
 
 User = get_user_model()
 
@@ -30,6 +31,13 @@ class CollegeModel(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     hod = models.ManyToManyField(User, related_name='college')
+    university = models.ForeignKey(
+        UniversityModel,
+        on_delete=models.CASCADE,
+        related_name='college',
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         '''
