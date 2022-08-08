@@ -20,7 +20,6 @@ class CollegeModel(models.Model):
         default='Jammu',
     )
     alias_name = models.TextField()
-    principal = models.IntegerField()
     logo = models.URLField()
     website = models.URLField()
     mobile = models.CharField(max_length=15)
@@ -35,6 +34,13 @@ class CollegeModel(models.Model):
         UniversityModel,
         on_delete=models.CASCADE,
         related_name='college',
+        blank=True,
+        null=True,
+    )
+    principal = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='administrated_college',
         blank=True,
         null=True,
     )
