@@ -1,9 +1,46 @@
+from dataclasses import fields
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 
+from college.models import CollegeModel
+
 User = get_user_model()
+
+##############################################################################################
+# Start:Nested Serialisers
+##############################################################################################
+
+
+class PrincipalCollegeSerializer(serializers.ModelSerializer):
+    '''
+        Nested College Serializer for User objects
+    '''
+
+    class Meta:
+        model = CollegeModel
+        exclude = [
+            'hod',
+            'principal',
+        ]
+
+
+class HODCollegeSerializer(serializers.ModelSerializer):
+    '''
+        Nested College Serializer for User objects
+    '''
+
+    class Meta:
+        model = CollegeModel
+        exclude = [
+            'hod',
+        ]
+
+
+##############################################################################################
+# End:Nested Serialisers
+##############################################################################################
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,7 +49,12 @@ class UserSerializer(serializers.ModelSerializer):
     '''
     # get full name from model User
     full_name = serializers.CharField(source='get_full_name')
+
+    # get short name from model User
     short_name = serializers.CharField(source='get_short_name')
+
+    college = HODCollegeSerializer(many=True, read_only=True)
+    administrated_college = PrincipalCollegeSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -35,7 +77,6 @@ class UserSerializer(serializers.ModelSerializer):
             'college',
             'administrated_college',
         ]
-        depth = 1
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -155,6 +196,8 @@ class HODSerializer(serializers.ModelSerializer):
     # get short name from model User
     short_name = serializers.CharField(source='get_short_name')
 
+    college = HODCollegeSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -175,7 +218,6 @@ class HODSerializer(serializers.ModelSerializer):
             'is_teacher',
             'college',
         ]
-        depth = 1
 
 
 class PrincipalSerializer(serializers.ModelSerializer):
@@ -187,6 +229,8 @@ class PrincipalSerializer(serializers.ModelSerializer):
 
     # get short name from model User
     short_name = serializers.CharField(source='get_short_name')
+
+    administrated_college = PrincipalCollegeSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -208,4 +252,3 @@ class PrincipalSerializer(serializers.ModelSerializer):
             'is_teacher',
             'administrated_college',
         ]
-        depth = 1
