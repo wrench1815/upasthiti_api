@@ -34,6 +34,7 @@ class UniversitySerializer(serializers.ModelSerializer):
     college_affiliated = UniCollegeSerializer(
         source='get_college_affiliated',
         many=True,
+        read_only=True,
     )
     college_affiliated_count = serializers.IntegerField(
         source='get_college_affiliated_count')
@@ -41,12 +42,14 @@ class UniversitySerializer(serializers.ModelSerializer):
     class Meta:
         model = UniversityModel
         fields = [
+            'id',
             'name',
             'address',
             'alias',
             'district',
             'email',
             'phone_number',
+            'website',
             'logo',
             'logo_public_id',
             'vice_chancelor',
