@@ -29,6 +29,18 @@ class UniversityModel(models.Model):
         verbose_name = 'University'
         verbose_name_plural = 'Universities'
 
+    def get_college_affiliated(self):
+        '''
+            Returns the list of Colleges affiliated to this University.
+        '''
+        return self.college.all()
+
+    def get_college_affiliated_count(self):
+        '''
+            Returns the count of Colleges affiliated to this University.
+        '''
+        return self.college.count()
+
     def __str__(self):
         '''Unicode representation of UniversityModel.'''
         return str(self.name)
