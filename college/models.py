@@ -21,6 +21,7 @@ class CollegeModel(models.Model):
     )
     alias_name = models.TextField()
     logo = models.URLField()
+    logo_public_id = models.TextField(blank=True, null=True)
     website = models.URLField()
     mobile = models.CharField(max_length=15)
     email = models.EmailField(
