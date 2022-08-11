@@ -21,6 +21,7 @@ USER_FIELDS = [
     'profile_image',
     'profile_image_public_id',
     'gender',
+    'mobile',
     'date_added',
     'is_admin',
     'is_principal',

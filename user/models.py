@@ -18,6 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     '''Base User Model'''
     username = None
     email = models.EmailField(_('email address'), unique=True)
+    mobile = models.CharField(max_length=15, blank=True, null=True)
     first_name = models.CharField(max_length=45, blank=True)
     last_name = models.CharField(max_length=45, blank=True)
     profile_image = models.URLField(blank=True, null=True)
