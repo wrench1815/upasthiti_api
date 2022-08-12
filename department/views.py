@@ -1,17 +1,56 @@
 import logging
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter, SearchFilter
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers, models
 
 from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsTeacher
 
+from api.paginator import StandardPagination
+
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        request=serializers.DepartmentSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(description='Department Added Successfully', ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Creates a new Department Object.'),
+    get=extend_schema(
+        request=serializers.DepartmentFullSerializer,
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Department List',
+                response=serializers.DepartmentFullSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Returns list of all Department.'),
+)
 class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
@@ -26,25 +65,23 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
     ]
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
+    ordering_fields = ['created_on']
+    ordering = '-created_on'
+    search_fields = ['$name__department_name']  #? fuzzy search using regex
+    filterset_fields = [
+        'name',
+        'college',
+    ]
 
     #? Create a new department object
-    @extend_schema(
-        request=serializers.DepartmentSerializer,
-        responses={
-            #? 201
-            status.HTTP_201_CREATED:
-            OpenApiResponse(description='Department Added Successfully'),
-            #?400
-            status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse({})
-        },
-        description='Creates a new Department Object.')
     def post(self, request, *args, **kwargs):
-        serializer = serializers.DepartmentSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        dept = serializers.DepartmentSerializer(data=request.data)
+        dept.is_valid(raise_exception=True)
 
         try:
-            serializer.save()
+            dept.save()
         except Exception as ex:
             logger.error(str(ex))
             return Response({'detail': str(ex)},
@@ -56,6 +93,71 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description=
+        'Returns Single Department registered on Application of given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Department Details',
+                response=serializers.DepartmentFullSerializer,
+            ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    patch=extend_schema(
+        request=serializers.DepartmentSerializer,
+        description=
+        'Updates the Department of given Id with the provided Data.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Department Updated Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    delete=extend_schema(
+        description='Deletes the Department of the given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Department Deleted Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+)
 class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
@@ -78,35 +180,12 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     lookup_field = 'pk'
 
     #? get single Department
-    @extend_schema(
-        description=
-        'Returns Single Department on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            serializers.DepartmentFullSerializer,
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def get(self, request, *args, **kwargs):
         department = self.get_object()
         serializer = serializers.DepartmentFullSerializer(department)
         return Response(serializer.data)
 
     #? Update Department of given Id
-    @extend_schema(
-        request=serializers.DepartmentSerializer,
-        description=
-        'Updates the Department of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Department Updated Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def patch(self, request, *args, **kwargs):
         department = self.get_object()
         serializer = serializers.DepartmentSerializer(
@@ -123,17 +202,6 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
     #? Delete Department of given Id
-    @extend_schema(
-        description=
-        'Deletes the Department of the given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Department Deleted Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def delete(self, request, *args, **kwargs):
         department = self.get_object()
         department.delete()
@@ -144,23 +212,8 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
-    '''
-        Allowed methods: GET, POST
-
-        GET: Returns list of all Department Types
-        POST: Creates a new Department Type object
-
-        Accessible by: Admin, Principal
-    '''
-    queryset = models.DepartmentTypeModel.objects.all()
-    serializer_class = serializers.DepartmentTypeFullSerializer
-    permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
-    ]
-
-    #? list all department types
-    @extend_schema(
+@extend_schema_view(
+    get=extend_schema(
         description=
         'Returns list of all Department Types.\n\nAccessible by: Admin, Teacher',
         responses={
@@ -170,12 +223,8 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
             #? 404
             status.HTTP_404_NOT_FOUND:
             OpenApiResponse(description='Not found')
-        })
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    #? Create a new department object
-    @extend_schema(
+        }),
+    post=extend_schema(
         request=serializers.DepartmentTypeSerializer,
         responses={
             #? 201
@@ -187,7 +236,22 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
         },
         description=
         'Creates a new Department Type Object.\n\nAccessible by: Admin, Teacher'
-    )
+    ),
+)
+class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
+    '''
+        Allowed methods: GET, POST
+
+        GET: Returns list of all Department Types
+        POST: Creates a new Department Type object
+
+        Accessible by: Admin, Principal
+    '''
+    queryset = models.DepartmentTypeModel.objects.all()
+    serializer_class = serializers.DepartmentTypeFullSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    #? Create a new department object
     def post(self, request, *args, **kwargs):
         serializer = serializers.DepartmentTypeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -205,6 +269,44 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description=
+        'Returns Single Department Type of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            serializers.DepartmentTypeSerializer,
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        }),
+    patch=extend_schema(
+        request=serializers.DepartmentTypeSerializer,
+        description=
+        'Updates the Department Type of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Department Type Updated Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        }),
+    delete=extend_schema(
+        description=
+        'Deletes the Department Type of the given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Department Type Deleted Successfully'),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(description='Not found')
+        }),
+)
 class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
@@ -221,23 +323,10 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
     queryset = models.DepartmentTypeModel.objects.all()
     serializer_class = serializers.DepartmentTypeSerializer
-    permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
-    ]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'pk'
 
     #? get single Department Type
-    @extend_schema(
-        description=
-        'Returns Single Department Type of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            serializers.DepartmentTypeSerializer,
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def get(self, request, *args, **kwargs):
         department_type = self.get_object()
         serializer = serializers.DepartmentTypeFullSerializer(department_type)
@@ -245,19 +334,6 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(serializer.data)
 
     #? Update Department Type of given Id
-    @extend_schema(
-        request=serializers.DepartmentTypeSerializer,
-        description=
-        'Updates the Department Type of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(
-                description='Department Type Updated Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def patch(self, request, *args, **kwargs):
         department_type = self.get_object()
         serializer = serializers.DepartmentTypeSerializer(
@@ -274,18 +350,6 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         return Response(response, status=status.HTTP_200_OK)
 
     #? Delete Department Type of given Id
-    @extend_schema(
-        description=
-        'Deletes the Department Type of the given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(
-                description='Department Type Deleted Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def delete(self, request, *args, **kwargs):
         department_type = self.get_object()
         department_type.delete()
