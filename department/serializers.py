@@ -1,24 +1,61 @@
 from rest_framework import serializers
+
 from . import models
+from college import serializers as college_serializers
+from college.models import CollegeModel
+
+DEPARTMENT_FIELDS = [
+    'name',
+    'hod',
+    'teacher',
+    'course',
+    'college',
+    'created_on',
+]
+
+##############################################################################################
+# Start:Nested Serialisers
+##############################################################################################
 
 
+class DeptCollegeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CollegeModel
+        exclude = [
+            'university',
+            'principal',
+            'hod',
+        ]
+
+
+DeptHODSerializer = college_serializers.CollegeHODSerializer
+
+##############################################################################################
+# End:Nested Serialisers
+##############################################################################################
+
+
+##############################################################################################
+# Department Serializers
 class DepartmentFullSerializer(serializers.ModelSerializer):
     '''
         Serializer to display Department Data
     '''
-    department_name = serializers.CharField(
-        source='department_name.department_name')
+    name = serializers.CharField(source='name.department_name')
+    hod = DeptHODSerializer()
+    college = DeptCollegeSerializer()
 
     class Meta:
         model = models.DepartmentModel
-        fields = '__all__'
-        depth = 1
+        fields = DEPARTMENT_FIELDS
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
     '''
         Serializer to Add and Edit Department Data
     '''
+    
 
     class Meta:
         model = models.DepartmentModel
@@ -26,9 +63,9 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'created_on',
         ]
 
-    # Todo : janch partal(validation)
-    def validate(self, attrs):
-        return super().validate(attrs)
+
+##############################################################################################
+# Department Type Serializers
 
 
 class DepartmentTypeSerializer(serializers.ModelSerializer):
