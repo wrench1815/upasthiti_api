@@ -1,23 +1,35 @@
 from django.db import models
 from django.utils import timezone
-
+from django.contrib.auth import get_user_model
 from college.models import CollegeModel
 
+User = get_user_model()
 
-# Create your models her
+
 class DepartmentModel(models.Model):
     '''Model definition for DepartmentModel.'''
 
-    department_name = models.ForeignKey('DepartmentTypeModel',
-                                        on_delete=models.CASCADE,
-                                        related_name='department')
-    hod = models.IntegerField(null=True)
+    name = models.ForeignKey(
+        'DepartmentTypeModel',
+        on_delete=models.CASCADE,
+        related_name='department',
+    )
+    hod = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='hod_department',
+        null=True,
+        blank=True,
+    )
     teacher = models.IntegerField(null=True)
     course = models.IntegerField(null=True)
-    college = models.ForeignKey(CollegeModel,
-                                on_delete=models.CASCADE,
-                                related_name='department',
-                                null=True)
+    college = models.ForeignKey(
+        CollegeModel,
+        on_delete=models.CASCADE,
+        related_name='department',
+        null=True,
+        blank=True,
+    )
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
