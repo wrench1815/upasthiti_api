@@ -5,6 +5,7 @@ from college import serializers as college_serializers
 from college.models import CollegeModel
 
 DEPARTMENT_FIELDS = [
+    'id',
     'name',
     'hod',
     'teacher',
@@ -55,7 +56,6 @@ class DepartmentSerializer(serializers.ModelSerializer):
     '''
         Serializer to Add and Edit Department Data
     '''
-    
 
     class Meta:
         model = models.DepartmentModel

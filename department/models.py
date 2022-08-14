@@ -40,7 +40,7 @@ class DepartmentModel(models.Model):
 
     def __str__(self):
         '''Unicode representation of DepartmentModel.'''
-        return str(self.department_name.department_name)
+        return str(self.name.department_name)
 
 
 class DepartmentTypeModel(models.Model):
