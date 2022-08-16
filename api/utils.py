@@ -45,3 +45,27 @@ DISTRICTS_CHOICES = (
     ('Srinagar', 'Srinagar'),
     ('Udhampur', 'Udhampur'),
 )
+
+DISTRICTS_CHOICES_WITH_NONE = (
+    ('Anantnag', 'Anantnag'),
+    ('Bandipore', 'Bandipore'),
+    ('Baramulla', 'Baramulla'),
+    ('Budgam', 'Budgam'),
+    ('Doda', 'Doda'),
+    ('Ganderbal', 'Ganderbal'),
+    ('Jammu', 'Jammu'),
+    ('Kathua', 'Kathua'),
+    ('Kishtwar', 'Kishtwar'),
+    ('Kulgam', 'Kulgam'),
+    ('Kupwara', 'Kupwara'),
+    ('Poonch', 'Poonch'),
+    ('Pulwama', 'Pulwama'),
+    ('Rajouri', 'Rajouri'),
+    ('Ramban', 'Ramban'),
+    ('Reasi', 'Reasi'),
+    ('Samba', 'Samba'),
+    ('Shopian', 'Shopian'),
+    ('Srinagar', 'Srinagar'),
+    ('Udhampur', 'Udhampur'),
+    ('None Specified', 'None Specified'),
+)
