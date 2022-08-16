@@ -39,6 +39,9 @@ from .views import ImageUploadAPIView
 #? University
 from university import views as UniViews
 
+#? Contact
+from contact import views as ContactViews
+
 urlpatterns = [
     #? Auth Routes
     path('auth/token/',
@@ -151,4 +154,15 @@ urlpatterns = [
     path('university/<int:pk>/',
          UniViews.UniversityRetrieveUpdateDestroyAPIView.as_view(),
          name='university-retrieve-update-destroy'),
+
+    #? Contact
+    path('contact/',
+         ContactViews.ContactListAPIView.as_view(),
+         name='contact-list'),
+    path('contact/add/',
+         ContactViews.ContactCreateAPIView.as_view(),
+         name='contact-add'),
+    path('contact/<int:pk>/',
+         ContactViews.ContactRetrieveUpdateDestroyAPIView.as_view(),
+         name='contact-retrieve-update-destroy'),
 ]
