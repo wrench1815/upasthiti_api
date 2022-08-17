@@ -374,7 +374,7 @@ class UsersTeacherListAPIView(generics.ListAPIView):
 @extend_schema_view(
     get=extend_schema(
         description=
-        'Returns list of HoD Users.\n\nFilters:\n\n- unassigned\n\nNotes:\n\n- When using unassigned filter, be mindfull that passing \'False\' will return duplicated entries, ehich is by Architecture of filter used.',
+        'Returns list of HoD Users.\n\nFilters:\n\n- unassigned\n\n- exclude_college',
         responses={
             #? 200
             status.HTTP_200_OK:

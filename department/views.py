@@ -66,7 +66,7 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
     ]
-    # pagination_class = StandardPagination
+    pagination_class = StandardPagination
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
     ordering_fields = ['created_on']
     ordering = '-created_on'
@@ -216,7 +216,7 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 @extend_schema_view(
     get=extend_schema(
         description=
-        'Returns list of all Department Types.\n\nFilters:\n\n- unassigned\n\nNotes:\n\n- When using unassigned filter, be mindfull that passing \'False\' will return duplicated entries, ehich is by Architecture of filter used.\n\nAccessible by: Admin, Teacher',
+        'Returns list of all Department Types.\n\nFilters:\n\n- unassigned\n\n- exclude_college\n\nAccessible by: Admin, Teacher',
         responses={
             #? 200
             status.HTTP_200_OK:

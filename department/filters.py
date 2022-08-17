@@ -4,8 +4,13 @@ from .models import DepartmentTypeModel
 
 
 class DepartmentTypeFilter(filters.FilterSet):
-    unassigned = filters.BooleanFilter(field_name='department',
-                                       lookup_expr='isnull')
+
+    #? Exclude college passed from lookup
+    exclude_college = filters.NumberFilter(
+        field_name='department__college',
+        lookup_expr='exact',
+        exclude=True,
+    )
 
     class Meta:
         model = DepartmentTypeModel
