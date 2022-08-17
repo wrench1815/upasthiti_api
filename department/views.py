@@ -10,6 +10,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers, models
+from .filters import DepartmentTypeFilter
 
 from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsTeacher
 
@@ -215,7 +216,7 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 @extend_schema_view(
     get=extend_schema(
         description=
-        'Returns list of all Department Types.\n\nAccessible by: Admin, Teacher',
+        'Returns list of all Department Types.\n\nFilters:\n\n- unassigned\n\nNotes:\n\n- When using unassigned filter, be mindfull that passing \'False\' will return duplicated entries, ehich is by Architecture of filter used.\n\nAccessible by: Admin, Teacher',
         responses={
             #? 200
             status.HTTP_200_OK:
@@ -250,6 +251,8 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.DepartmentTypeModel.objects.all()
     serializer_class = serializers.DepartmentTypeFullSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DepartmentTypeFilter
 
     #? Create a new department object
     def post(self, request, *args, **kwargs):

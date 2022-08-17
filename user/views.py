@@ -13,6 +13,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import HODSerializer, PrincipalSerializer, UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
 from .permissions import UserIsAdmin
+from .filters import HODFilter
 
 from api.paginator import StandardPagination
 
@@ -372,7 +373,8 @@ class UsersTeacherListAPIView(generics.ListAPIView):
 
 @extend_schema_view(
     get=extend_schema(
-        description='Returns list of HoD Users.',
+        description=
+        'Returns list of HoD Users.\n\nFilters:\n\n- unassigned\n\nNotes:\n\n- When using unassigned filter, be mindfull that passing \'False\' will return duplicated entries, ehich is by Architecture of filter used.',
         responses={
             #? 200
             status.HTTP_200_OK:
@@ -404,4 +406,4 @@ class UsersHodListAPIView(generics.ListAPIView):
     ]
     ordering_fields = 'date_added'
     ordering = '-date_added'
-    filterset_fields = ['college']
+    filterset_class = HODFilter
