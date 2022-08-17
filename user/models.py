@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from .managers import UserManager
 
+from api.utils import DISTRICTS_CHOICES
+
 GENDER_CHOICES = (
     ('Male', 'Male'),
     ('Female', 'Female'),
@@ -19,6 +21,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     mobile = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    district = models.CharField(
+        choices=DISTRICTS_CHOICES,
+        max_length=11,
+        default='Jammu',
+    )
     first_name = models.CharField(max_length=45, blank=True)
     last_name = models.CharField(max_length=45, blank=True)
     profile_image = models.URLField(blank=True, null=True)
