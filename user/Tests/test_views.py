@@ -71,7 +71,10 @@ class TestViews(APITestCase):
         resp = self.client.get(reverse('user-list-create'))
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(resp.data['results']), User.objects.count())
+        self.assertEqual(
+            resp.data['pagination'].get('items'),
+            User.objects.count(),
+        )
 
     def test_UserListing_unauthenticated(self):
         '''
@@ -102,6 +105,9 @@ class TestViews(APITestCase):
             'last_name': 'User',
             'email': 'test@email.com',
             'gender': 'Female',
+            'district': 'Jammu',
+            'mobile': '0123456789',
+            'address': 'Black Hole',
             'password': 'Test@123',
             'confirm_password': 'Test@123'
         }
@@ -135,6 +141,9 @@ class TestViews(APITestCase):
             'first_name': 'Update',
             'last_name': 'User',
             'email': 'update@user.com',
+            'district': 'Jammu',
+            'mobile': '0123456789',
+            'address': 'Black Hole',
             'gender': 'Male',
             'password': 'Test@123',
             'confirm_password': 'Test@123'
