@@ -65,7 +65,7 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
     ]
-    pagination_class = StandardPagination
+    # pagination_class = StandardPagination
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
     ordering_fields = ['created_on']
     ordering = '-created_on'
