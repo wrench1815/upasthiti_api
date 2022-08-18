@@ -32,6 +32,14 @@ class DeptCollegeSerializer(serializers.ModelSerializer):
 
 DeptHODSerializer = college_serializers.CollegeHODSerializer
 
+
+class DeptNameRelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.DepartmentTypeModel
+        fields = '__all__'
+
+
 ##############################################################################################
 # End:Nested Serialisers
 ##############################################################################################
@@ -44,12 +52,15 @@ class DepartmentFullSerializer(serializers.ModelSerializer):
         Serializer to display Department Data
     '''
     name = serializers.CharField(source='name.department_name')
+    name_rel = DeptNameRelSerializer(source='name')
     hod = DeptHODSerializer()
     college = DeptCollegeSerializer()
 
     class Meta:
         model = models.DepartmentModel
-        fields = DEPARTMENT_FIELDS
+        fields = DEPARTMENT_FIELDS + [
+            'name_rel',
+        ]
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
