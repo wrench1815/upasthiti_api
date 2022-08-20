@@ -74,6 +74,7 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     filterset_fields = [
         'name',
         'college',
+        'hod',
     ]
 
     #? Create a new department object
