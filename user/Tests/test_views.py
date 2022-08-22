@@ -115,7 +115,7 @@ class TestViews(APITestCase):
         resp = self.client.post(reverse('user-list-create'), data)
         created_user = User.objects.get(email=data['email'])
 
-        self.assertEqual(resp.data, {'detail': 'User Created Successfully'})
+        self.assertEqual(resp.data['email'], data['email'])
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(created_user.email, data['email'])
