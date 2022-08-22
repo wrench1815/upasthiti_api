@@ -30,7 +30,10 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='User Created Successfully', ),
+            OpenApiResponse(
+                description='User Created Successfully',
+                response=UserSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse(
@@ -140,7 +143,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         response = UserSerializer(user)
-        logger.info("User Created Successfully")
+        logger.info('User Created Successfully')
 
         # return created user
         return Response(response.data, status=status.HTTP_201_CREATED)
