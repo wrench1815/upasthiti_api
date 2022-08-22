@@ -448,3 +448,12 @@ cloudinary.config(
     api_secret=env.str('CLOUDINARY_API_SECRET'),
     secure=True,
 )
+
+#? Email Config
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL')

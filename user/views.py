@@ -1,9 +1,12 @@
 import logging
+import random
+import string
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from drf_spectacular.types import OpenApiTypes
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -73,11 +76,31 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
     #? Create a new User
     def post(self, request, *args, **kwargs):
+        if 'password' not in request.data:
+            #? Generate a random password
+            pwd_1 = ''.join(
+                random.choice(string.ascii_lowercase) for _ in range(3))
+            pwd_2 = ''.join(
+                random.choice(string.ascii_uppercase) for _ in range(3))
+            pwd_3 = ''.join(random.choice(string.digits) for _ in range(3))
+            pwd_4 = ''.join(random.choice('!@#$%^&*()') for _ in range(3))
+            pwd = pwd_1 + pwd_2 + pwd_3 + pwd_4
+            pwd = list(pwd)
+
+            random.shuffle(pwd)
+            pwd = ''.join(pwd)
+
+            request.data['password'] = pwd
+            request.data['confirm_password'] = pwd
+
         serializer = UserCreateSerializer(data=request.data)
+
         serializer.is_valid(raise_exception=True)
 
+        user = None
+
         try:
-            User.objects.create_user(
+            user = User.objects.create_user(
                 profile_image=serializer.validated_data['profile_image'],
                 profile_image_public_id=serializer.
                 validated_data['profile_image_public_id'],
@@ -95,16 +118,32 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                 is_teacher=serializer.validated_data['is_teacher'],
             )
 
+            logger.info("User Saved Successfully")
+
+            # send email to user
+            subject = 'Welcome to Upasthiti'
+            message = f'Hello {user.first_name},\n\nWelcome to Upasthiti.\n\nYour login credentials are:\n\nEmail: {user.email}\nPassword: {request.data["password"]}\n\nRegards,\nUpasthiti'
+
+            user.email_user(subject, message)
+
+            # if development environment, log password
+            if settings.DEBUG:
+                logger.info(
+                    f'>>>>>>>>>>>>>>>>>>>>>>>>>>> password for user {request.data["email"]} is {request.data["password"]} <<<<<<<<<<<<<<<<<<<<<<<<<<<'
+                )
+                logger.info(message)
+
         except Exception as ex:
             logger.error(str(ex))
 
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'User Created Successfully'}
-        logger.info(response)
+        response = UserSerializer(user)
+        logger.info("User Created Successfully")
 
-        return Response(response, status=status.HTTP_201_CREATED)
+        # return created user
+        return Response(response.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema_view(
