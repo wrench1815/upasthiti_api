@@ -76,7 +76,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
     #? Create a new User
     def post(self, request, *args, **kwargs):
-        if 'password' not in request.data:
+        if 'password' not in request.data or not request.data['password']:
             #? Generate a random password
             pwd_1 = ''.join(
                 random.choice(string.ascii_lowercase) for _ in range(3))
