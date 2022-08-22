@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from . import models, serializers
 
@@ -88,7 +89,9 @@ class UniversityListCreateAPIView(generics.ListCreateAPIView):
         try:
             serializer.save()
 
-            print(repr(serializer))
+            # log created obect when debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
 
         except Exception as ex:
             logger.error(str(ex))

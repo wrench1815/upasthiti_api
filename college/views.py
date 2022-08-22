@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from . import serializers, models
 from . import response_serializers as rs
@@ -91,6 +92,10 @@ class CollegeListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             serializer.save()
+
+            # log created obect when debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
 
         except Exception as ex:
             logger.error(str(ex))
