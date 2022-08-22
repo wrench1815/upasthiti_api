@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from . import models, serializers
 
@@ -24,7 +25,10 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='University Created Successfully', ),
+            OpenApiResponse(
+                description='University Created Successfully',
+                response=serializers.UniversityCreateSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse(
@@ -74,7 +78,7 @@ class UniversityListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
     ordering_fields = ['date_added']
     ordering = '-date_added'
-    search_fields = ['$name'] #? fuzzy search using regex
+    search_fields = ['$name']  #? fuzzy search using regex
     filterset_fields = ['district']
 
     #? Create a new University
@@ -85,14 +89,18 @@ class UniversityListCreateAPIView(generics.ListCreateAPIView):
         try:
             serializer.save()
 
+            # log created obect when debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
+
         except Exception as ex:
             logger.error(str(ex))
 
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'University Created Successfully'}
-        logger.info(response)
+        response = serializer.data
+        logger.info('University Created Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 

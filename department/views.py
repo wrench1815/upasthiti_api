@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from . import serializers, models
 from .filters import DepartmentTypeFilter
@@ -25,7 +26,10 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='Department Added Successfully', ),
+            OpenApiResponse(
+                description='Department Added Successfully',
+                response=serializers.DepartmentSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse(
@@ -84,13 +88,17 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             dept.save()
+
+            if settings.DEBUG:
+                logger.info(dept.data)
+
         except Exception as ex:
             logger.error(str(ex))
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Department Added Successfully'}
-        logger.info(response)
+        response = dept.data
+        logger.info('Department Added Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 
@@ -231,7 +239,10 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='Department Type Added Successfully'),
+            OpenApiResponse(
+                description='Department Type Added Successfully',
+                response=serializers.DepartmentTypeSerializer,
+            ),
             #?400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse({})
@@ -262,13 +273,17 @@ class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             serializer.save()
+
+            if settings.DEBUG:
+                logger.info(serializer.data)
+
         except Exception as ex:
             logger.error(str(ex))
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Department Type Added Successfully'}
-        logger.info(response)
+        response = serializer.data
+        logger.info('Department Type Added Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 

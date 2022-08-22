@@ -8,8 +8,10 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from . import serializers, models
+from . import response_serializers as rs
 
 from user.permissions import UserIsAdmin
 
@@ -24,7 +26,10 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='College Created Successfully', ),
+            OpenApiResponse(
+                description='College Created Successfully',
+                response=rs.ResponseCollegeCreateSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse(
@@ -88,14 +93,18 @@ class CollegeListCreateAPIView(generics.ListCreateAPIView):
         try:
             serializer.save()
 
+            # log created obect when debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
+
         except Exception as ex:
             logger.error(str(ex))
 
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'College Created Successfully'}
-        logger.info(response)
+        response = serializer.data
+        logger.info('College Created Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 
@@ -183,7 +192,7 @@ class CollegeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
 
-    #? get single Collge
+    #? get single College
     def get(self, request, *args, **kwargs):
         college = self.get_object()
         serializer = serializers.CollegeSerializer(college)

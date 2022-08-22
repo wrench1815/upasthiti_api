@@ -30,7 +30,10 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='User Created Successfully', ),
+            OpenApiResponse(
+                description='User Created Successfully',
+                response=UserSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
             OpenApiResponse(
@@ -76,7 +79,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
     #? Create a new User
     def post(self, request, *args, **kwargs):
-        if 'password' not in request.data:
+        if 'password' not in request.data or not request.data['password']:
             #? Generate a random password
             pwd_1 = ''.join(
                 random.choice(string.ascii_lowercase) for _ in range(3))
@@ -140,7 +143,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         response = UserSerializer(user)
-        logger.info("User Created Successfully")
+        logger.info('User Created Successfully')
 
         # return created user
         return Response(response.data, status=status.HTTP_201_CREATED)

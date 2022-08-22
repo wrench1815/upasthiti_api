@@ -67,6 +67,7 @@ class UniversityCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UniversityModel
         fields = [
+            'id',
             'name',
             'address',
             'alias',
@@ -77,3 +78,4 @@ class UniversityCreateSerializer(serializers.ModelSerializer):
             'logo_public_id',
             'vice_chancelor',
         ]
+        read_only_fields = ['id']
