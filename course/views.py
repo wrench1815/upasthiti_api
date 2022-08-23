@@ -1,13 +1,19 @@
 import logging
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from . import serializers, models
 
-from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsHOD
+from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsHOD, UserIsTeacher
+
+from api.paginator import StandardPagination
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +31,13 @@ class CourseListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.CourseFullSerializer
     permission_classes = [
         permissions.IsAuthenticated &
-        (UserIsAdmin | UserIsPrincipal | UserIsHOD)
+        (UserIsAdmin | UserIsPrincipal | UserIsHOD | UserIsTeacher)
     ]
+    pagination_class = StandardPagination
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ['created_on']
+    ordering = '-created_on'
+    # filterset_fields = ['university', 'district']
 
     #? create a new Course Object
     @extend_schema(
