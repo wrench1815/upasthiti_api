@@ -1,16 +1,26 @@
 from django.db import models
 from django.utils import timezone
 
+from university.models import UniversityModel
+
 
 # Create your models here.
 class CourseModel(models.Model):
     '''Model definition for course.'''
 
-    course_name = models.TextField()
-    course_code = models.CharField(max_length=50)
-    teacher_assigned = models.IntegerField(null=True)
+    title = models.TextField()
+    code = models.CharField(
+        max_length=15,
+        blank=True,
+        null=True,
+    )
+    university = models.OneToOneField(
+        UniversityModel,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
     is_practical = models.BooleanField(default=False)
-    classes = models.IntegerField(null=True)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -21,4 +31,4 @@ class CourseModel(models.Model):
 
     def __str__(self):
         '''Unicode representation of course.'''
-        return self.course_name
+        return self.title
