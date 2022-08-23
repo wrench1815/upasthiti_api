@@ -8,12 +8,12 @@ class CourseModelAdmin(admin.ModelAdmin):
     '''Admin View for CourseModel'''
 
     list_display = [
-        'course_name',
-        'course_code',
+        'title',
+        'code',
         'is_practical',
     ]
 
     search_fields = [
-        'course_name',
-        'course_code',
+        'title',
+        'code',
     ]
