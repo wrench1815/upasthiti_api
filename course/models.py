@@ -11,14 +11,13 @@ class CourseModel(models.Model):
     title = models.TextField()
     code = models.CharField(
         max_length=15,
-        blank=True,
-        null=True,
+        unique=True,
+        # blank=True,
+        # null=True,
     )
     university = models.OneToOneField(
         UniversityModel,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
     )
     is_practical = models.BooleanField(default=False)
     created_on = models.DateTimeField(default=timezone.now)
