@@ -22,7 +22,3 @@ class AttendanceSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
         ]
-
-    # todo: Humara Validation Kendr
-    def validate(self, attrs):
-        return super().validate(attrs)

@@ -1,17 +1,34 @@
 import logging
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+
+from django.conf import settings
 
 from . import serializers, models
 
 from user.permissions import UserIsAdmin, UserIsTeacher
 
+from api.paginator import StandardPagination
+
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        request=serializers.AttendanceSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(description='Attendance Added Successfully'),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse({})
+        },
+        description='Creates a new Attendance Object.'), )
 class AttendanceListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
@@ -26,19 +43,9 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsTeacher)
     ]
+    pagination_class = StandardPagination
 
     #? create a new Attendance Object
-    @extend_schema(
-        request=serializers.AttendanceSerializer,
-        responses={
-            #? 201
-            status.HTTP_201_CREATED:
-            OpenApiResponse(description='Attendance Added Successfully'),
-            #? 400
-            status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse({})
-        },
-        description='Creates a new Attendance Object.')
     def post(self, request, *args, **kwargs):
         serializer = serializers.AttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -46,14 +53,17 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
         try:
             serializer.save()
 
+            if settings.DEBUG:
+                logger.info(serializer.data)
+
         except Exception as ex:
             logger.error(str(ex))
 
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Attendance Added Successfully'}
-        logger.info(response)
+        response = serializer.data
+        logger.info('Attendance Added Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 

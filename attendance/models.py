@@ -1,24 +1,29 @@
 from django.db import models
 from django.utils import timezone
 
+from student.models import StudentModel
+
 
 class AttendanceModel(models.Model):
-    """Model definition for AttendanceModel."""
+    '''Model definition for AttendanceModel.'''
 
-    is_present = models.BooleanField()
-    is_absent = models.BooleanField()
-    is_late = models.BooleanField()
-    date = models.DateTimeField()
-    student = models.IntegerField(null=True)
-    classes = models.IntegerField(null=True)
+    is_present = models.BooleanField(default=False)
+    is_absent = models.BooleanField(default=True)
+    is_late = models.BooleanField(default=False)
+    date = models.DateField(default=timezone.now)
+    student = models.ForeignKey(
+        StudentModel,
+        on_delete=models.CASCADE,
+        related_name='attendance_student',
+    )
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        """Meta definition for AttendanceModel."""
+        '''Meta definition for AttendanceModel.'''
 
         verbose_name = 'Attendance'
         verbose_name_plural = 'Attendances'
 
     def __str__(self):
-        """Unicode representation of AttendanceModel."""
-        pass
+        '''Unicode representation of AttendanceModel.'''
+        return self.student.first_name
