@@ -1,25 +1,59 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+from college.models import CollegeModel
+from department.models import DepartmentModel
+from course.models import CourseModel
+from student.models import StudentModel
+
+User = get_user_model()
 
 
 class ClassesModel(models.Model):
-    """Model definition for ClassesModel."""
+    '''Model definition for ClassesModel.'''
 
-    class_name = models.TextField()
-    session = models.CharField(max_length=4)
-    college = models.IntegerField(null=True)
-    department = models.IntegerField(null=True)
-    course = models.IntegerField(null=True)
-    teacher = models.IntegerField(null=True)
-    student = models.IntegerField(null=True)
+    name = models.TextField()
+    code = models.CharField(
+        max_length=15,
+        unique=True,
+    )
+    session_start = models.DateField(
+        blank=True,
+        null=True,
+    )
+    session_end = models.DateField(
+        blank=True,
+        null=True,
+    )
+    college = models.ForeignKey(
+        CollegeModel,
+        on_delete=models.CASCADE,
+    )
+    department = models.ForeignKey(
+        DepartmentModel,
+        on_delete=models.CASCADE,
+    )
+    course = models.ForeignKey(
+        CourseModel,
+        on_delete=models.CASCADE,
+    )
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    student = models.ForeignKey(
+        StudentModel,
+        on_delete=models.CASCADE,
+    )
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        """Meta definition for ClassesModel."""
+        '''Meta definition for ClassesModel.'''
 
-        verbose_name = 'Classes'
+        verbose_name = 'Class'
         verbose_name_plural = 'Classes'
 
     def __str__(self):
-        """Unicode representation of ClassesModel."""
+        '''Unicode representation of ClassesModel.'''
         return self.class_name

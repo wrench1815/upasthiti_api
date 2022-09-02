@@ -144,3 +144,15 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+# random code generation
+# from django.utils.crypto import get_random_string
+
+# code = get_random_string(14)
+# code = None
+# while True:
+#     code = get_random_string(14)
+#     if not stuff.objects.filter(code=code).exists():
+#         break
+# stuff.save()
