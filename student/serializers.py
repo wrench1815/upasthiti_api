@@ -36,6 +36,12 @@ class StudentSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
         ]
+        optional_fields = [
+            'courses',
+            'department',
+            'classes',
+            'attendance ',
+        ]
 
     # Todo: janch partal(valaidation)
     def validate(self, attrs):
