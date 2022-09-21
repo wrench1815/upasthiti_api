@@ -8,13 +8,20 @@ class StudentModel(models.Model):
     '''Model definition for StudentModel.'''
     first_name = models.TextField()
     last_name = models.TextField()
-    class_rollno = models.IntegerField()
-    university_rollno = models.IntegerField(
-        unique=True,
-        default=int(get_random_string(
+    class_rollno = models.CharField(
+        max_length=50,
+        default=get_random_string(
             allowed_chars='0123456789',
             length=14,
-        )),
+        ),
+    )
+    university_rollno = models.CharField(
+        unique=True,
+        max_length=50,
+        default=get_random_string(
+            allowed_chars='0123456789',
+            length=14,
+        ),
     )
     email = models.EmailField()
     mobile = models.CharField(max_length=15)
