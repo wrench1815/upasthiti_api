@@ -8,12 +8,14 @@ class StudentModelAdmin(admin.ModelAdmin):
     '''Admin View for StudentModel'''
 
     list_display = [
+        'university_rollno',
         'first_name',
         'last_name',
         'created_on',
     ]
 
     search_fields = [
+        'university_rollno',
         'first_name',
         'last_name',
         'class_rollno',

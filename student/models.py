@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from django.utils.crypto import get_random_string
 from api.utils import DISTRICTS_CHOICES
 
 
@@ -9,6 +9,13 @@ class StudentModel(models.Model):
     first_name = models.TextField()
     last_name = models.TextField()
     class_rollno = models.IntegerField()
+    university_rollno = models.IntegerField(
+        unique=True,
+        default=int(get_random_string(
+            allowed_chars='0123456789',
+            length=14,
+        )),
+    )
     email = models.EmailField()
     mobile = models.CharField(max_length=15)
     address = models.TextField()
