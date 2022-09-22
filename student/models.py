@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+
 from api.utils import DISTRICTS_CHOICES
+from user.models import GENDER_CHOICES
 
 
 class StudentModel(models.Model):
@@ -36,10 +38,7 @@ class StudentModel(models.Model):
         blank=True,
         null=True,
     )
-    courses = models.IntegerField(null=True)
-    department = models.IntegerField(null=True)
-    classes = models.IntegerField(null=True)
-    attendance = models.IntegerField(null=True)
+    gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
