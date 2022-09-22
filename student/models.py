@@ -16,24 +16,28 @@ def random_gender():
     return gender[1]
 
 
+def random_rollno():
+    '''
+        returns a random string of numbers
+    '''
+    return get_random_string(
+        allowed_chars='0123456789',
+        length=14,
+    )
+
+
 class StudentModel(models.Model):
     '''Model definition for StudentModel.'''
     first_name = models.TextField()
     last_name = models.TextField()
     class_rollno = models.CharField(
         max_length=50,
-        default=get_random_string(
-            allowed_chars='0123456789',
-            length=14,
-        ),
+        default=random_rollno,
     )
     university_rollno = models.CharField(
         unique=True,
         max_length=50,
-        default=get_random_string(
-            allowed_chars='0123456789',
-            length=14,
-        ),
+        default=random_rollno,
     )
     email = models.EmailField()
     mobile = models.CharField(max_length=15)
