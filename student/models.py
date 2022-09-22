@@ -1,9 +1,19 @@
+import random
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from random import choice
 
 from api.utils import DISTRICTS_CHOICES
 from user.models import GENDER_CHOICES
+
+
+def random_gender():
+    '''
+        Returns a  Random Gender out of Gender List
+    '''
+    gender = choice(GENDER_CHOICES)
+    return gender[1]
 
 
 class StudentModel(models.Model):
@@ -38,7 +48,9 @@ class StudentModel(models.Model):
         blank=True,
         null=True,
     )
-    gender = models.CharField(max_length=15, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=15,
+                              choices=GENDER_CHOICES,
+                              default=random_gender)
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
