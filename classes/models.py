@@ -45,6 +45,8 @@ class ClassesModel(models.Model):
     student = models.ForeignKey(
         StudentModel,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     created_on = models.DateTimeField(default=timezone.now)
 

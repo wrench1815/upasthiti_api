@@ -1,23 +1,73 @@
+import datetime
 import logging
+import string
+from datetime import date, datetime
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
+
+from dateutil.relativedelta import relativedelta
+
+from django.utils.crypto import get_random_string
+from django.conf import settings
 
 from . import serializers, models
 
 from user.permissions import UserIsAdmin, UserIsHOD, UserIsTeacher
 
+from api.paginator import StandardPagination
+
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        request=serializers.ClassesSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(
+                description='Class Added Successfully',
+                response=serializers.ClassesSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Creates a new Class.'),
+    get=extend_schema(
+        request=serializers.ClassesFullSerializer,
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Class List',
+                response=serializers.ClassesFullSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description=
+        'Returns list of all Classes.\n\nOrdering:\n\n- default: -created_on\n\n- allowed: created_on, -created_on'
+    ),
+)
 class ClassesListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
 
         GET: Returns list of all Classes
-        POST: Creates a new Classes object
+        POST: Creates a new Class
 
         Accessible by: Admin, HOD, Teacher
     '''
@@ -26,25 +76,53 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
     ]
+    pagination_class = StandardPagination
+    filter_backends = [
+        OrderingFilter,
+    ]
+    ordering_fields = ['created_on']
+    ordering = '-created_on'
 
-    #? create a new Classes Object
-    @extend_schema(
-        request=serializers.ClassesSerializer,
-        responses={
-            #? 201
-            status.HTTP_201_CREATED:
-            OpenApiResponse(description='Classes Added Successfully'),
-            #? 400
-            status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse({})
-        },
-        description='Creates a new Classes Object.')
+    #? create a new Class
     def post(self, request, *args, **kwargs):
-        serializer = serializers.ClassesSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer = None
 
         try:
+            # generate a unique code for class
+            allowed_code_chars = string.ascii_letters + string.digits + '-_+'
+            code = None
+
+            while True:
+                code = get_random_string(14, allowed_code_chars)
+
+                logger.info(code)
+
+                if not models.ClassesModel.objects.filter(code=code).exists():
+                    break
+
+            request.data['code'] = code
+
+            #? calculate session end
+            #! calculation is done in consideration that each semester is 6 months long
+            #! this calculation is a rought estimate that the semester will end in 6 months
+            #! during calculation, day, i.e 12 8 2022 the 12, is not considered and calculation is done considering the month only regardless of day
+
+            session_end = datetime.strptime(
+                request.data['session_start'],
+                '%Y-%m-%d',
+            ).date() + relativedelta(months=6)
+
+            request.data['session_end'] = session_end.isoformat()
+
+            serializer = serializers.ClassesSerializer(data=request.data)
+
+            serializer.is_valid(raise_exception=True)
+
             serializer.save()
+
+            #? log created data if debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
 
         except Exception as ex:
             logger.error(str(ex))
@@ -52,21 +130,85 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Classes Added Successfully'}
-        logger.info(response)
+        response = serializer.data
+        logger.info('Class Added Successfully')
 
         return Response(response, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description='Returns Single Class of given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Class Details',
+                response=serializers.ClassesFullSerializer,
+            ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    patch=extend_schema(
+        request=serializers.ClassesSerializer,
+        description=
+        'Updates the Class of given Id with the provided Data.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Class Updated Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    delete=extend_schema(
+        description='Deletes the Class of the given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Class Deleted Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+)
 class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
 
-        GET: Return Classes of given Id
-        PATCH: Update Classes of given Id with Validated data provided
-        DELETE: Delete Classes of given Id
+        GET: Return Class of given Id
+        PATCH: Update Class of given Id with Validated data provided
+        DELETE: Delete Class of given Id
 
-        Note: Updatation on Classes is done via Partial Update method
+        Note: Updatation on Class is done via Partial Update method
 
         args: pk
         
@@ -79,80 +221,57 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     ]
     lookup_field = 'pk'
 
-    #? get single Class(s)
-    @extend_schema(
-        description=
-        'Returns Single Classes on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, HOD, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            serializers.ClassesFullSerializer,
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
+    #? get single Class
     def get(self, request, *args, **kwargs):
-        classes = self.get_object()
-        serializer = serializers.ClassesFullSerializer(classes)
+        single_class = self.get_object()
+        serializer = serializers.ClassesFullSerializer(single_class)
         return Response(serializer.data)
 
-    #? Update Classes of given Id
-    @extend_schema(
-        request=serializers.ClassesSerializer,
-        description=
-        'Updates the Classes of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, HOD, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Classes Updated Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
+    #? Update Class of given Id
     def patch(self, request, *args, **kwargs):
-        classes = self.get_object()
-        serializer = serializers.ClassesSerializer(
-            classes,
-            data=request.data,
-            partial=True,
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        try:
+            single_class = self.get_object()
 
-        response = {'detail': 'Classes Updated Sucecssfully'}
+            #? calculate session end
+            #! calculation is done in consideration that each semester is 6 months long
+            #! this calculation is a rought estimate that the semester will end in 6 months
+            #! during calculation, day, i.e 12 8 2022 the 12, is not considered and calculation is done considering the month only regardless of day
+
+            session_end = datetime.strptime(
+                request.data['session_start'],
+                '%Y-%m-%d',
+            ).date() + relativedelta(months=6)
+
+            request.data['session_end'] = session_end.isoformat()
+
+            serializer = serializers.ClassesSerializer(
+                single_class,
+                data=request.data,
+                partial=True,
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            #? log updated data if debug
+            if settings.DEBUG:
+                logger.info(serializer.data)
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        response = {'detail': 'Class Updated Sucecssfully'}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
 
-    #? Delete Classes of given Id
-    @extend_schema(
-        description=
-        'Deletes the Classes of the given Id.\n\nargs: pk\n\nAccessible by: Admin, HOD, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Classes Deleted Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
+    #? Delete Class of given Id
     def delete(self, request, *args, **kwargs):
-        classes = self.get_object()
-        classes.delete()
+        single_class = self.get_object()
+        single_class.delete()
 
-        response = {'detail': 'Classes Deleted Successfully'}
+        response = {'detail': 'Class Deleted Successfully'}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
-
-
-# random code generation
-# from django.utils.crypto import get_random_string
-
-# code = get_random_string(14)
-# code = None
-# while True:
-#     code = get_random_string(14)
-#     if not stuff.objects.filter(code=code).exists():
-#         break
-# stuff.save()
