@@ -29,10 +29,14 @@ class UserAdmin(UserAdmin):
         [
             'Basic Info', {
                 'fields': [
+                    'profile_image',
                     'first_name',
                     'last_name',
                     'gender',
                     'email',
+                    'mobile',
+                    'district',
+                    'address',
                     'password',
                 ],
             }
@@ -68,10 +72,14 @@ class UserAdmin(UserAdmin):
         [
             'Basic Info', {
                 'fields': [
+                    'profile_image',
                     'first_name',
                     'last_name',
                     'gender',
                     'email',
+                    'mobile',
+                    'district',
+                    'address',
                     'password',
                 ]
             }
