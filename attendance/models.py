@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 from student.models import StudentModel
-from classes.models import ClassesModel
+from classes.models import ClassModel
 
 
 class AttendanceModel(models.Model):
@@ -17,10 +17,10 @@ class AttendanceModel(models.Model):
         on_delete=models.CASCADE,
         related_name='attendance_student',
     )
-    classes = models.ForeignKey(
-        ClassesModel,
+    for_class = models.ForeignKey(
+        ClassModel,
         on_delete=models.CASCADE,
-        related_name='attendance_classes',
+        related_name='attendance_class',
         blank=True,
         null=True,
     )

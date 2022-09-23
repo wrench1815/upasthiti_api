@@ -2,23 +2,23 @@ from rest_framework import serializers
 from . import models
 
 
-class ClassesFullSerializer(serializers.ModelSerializer):
+class ClassFullSerializer(serializers.ModelSerializer):
     '''
-        Serializer to Display classes data
+        Serializer to Display class data
     '''
 
     class Meta:
-        model = models.ClassesModel
+        model = models.ClassModel
         fields = '__all__'
 
 
-class ClassesSerializer(serializers.ModelSerializer):
+class ClassSerializer(serializers.ModelSerializer):
     '''
-        Serializer to Add and edit classes data
+        Serializer to Add and edit class data
     '''
 
     class Meta:
-        model = models.ClassesModel
+        model = models.ClassModel
         exclude = [
             'created_on',
         ]

@@ -26,13 +26,13 @@ logger = logging.getLogger(__name__)
 
 @extend_schema_view(
     post=extend_schema(
-        request=serializers.ClassesSerializer,
+        request=serializers.ClassSerializer,
         responses={
             #? 201
             status.HTTP_201_CREATED:
             OpenApiResponse(
                 description='Class Added Successfully',
-                response=serializers.ClassesSerializer,
+                response=serializers.ClassSerializer,
             ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
@@ -43,13 +43,13 @@ logger = logging.getLogger(__name__)
         },
         description='Creates a new Class.'),
     get=extend_schema(
-        request=serializers.ClassesFullSerializer,
+        request=serializers.ClassFullSerializer,
         responses={
             #? 200
             status.HTTP_200_OK:
             OpenApiResponse(
                 description='Class List',
-                response=serializers.ClassesFullSerializer,
+                response=serializers.ClassFullSerializer,
             ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
@@ -62,7 +62,7 @@ logger = logging.getLogger(__name__)
         'Returns list of all Classes.\n\nOrdering:\n\n- default: -created_on\n\n- allowed: created_on, -created_on'
     ),
 )
-class ClassesListCreateAPIView(generics.ListCreateAPIView):
+class ClassListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
 
@@ -71,8 +71,8 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
 
         Accessible by: Admin, HOD, Teacher
     '''
-    queryset = models.ClassesModel.objects.all()
-    serializer_class = serializers.ClassesFullSerializer
+    queryset = models.ClassModel.objects.all()
+    serializer_class = serializers.ClassFullSerializer
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
     ]
@@ -97,7 +97,7 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
 
                 logger.info(code)
 
-                if not models.ClassesModel.objects.filter(code=code).exists():
+                if not models.ClassModel.objects.filter(code=code).exists():
                     break
 
             request.data['code'] = code
@@ -114,7 +114,7 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
 
             request.data['session_end'] = session_end.isoformat()
 
-            serializer = serializers.ClassesSerializer(data=request.data)
+            serializer = serializers.ClassSerializer(data=request.data)
 
             serializer.is_valid(raise_exception=True)
 
@@ -144,7 +144,7 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
             status.HTTP_200_OK:
             OpenApiResponse(
                 description='Class Details',
-                response=serializers.ClassesFullSerializer,
+                response=serializers.ClassFullSerializer,
             ),
             #? 404
             status.HTTP_404_NOT_FOUND:
@@ -160,7 +160,7 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
             ),
         }),
     patch=extend_schema(
-        request=serializers.ClassesSerializer,
+        request=serializers.ClassSerializer,
         description=
         'Updates the Class of given Id with the provided Data.\n\nargs: pk',
         responses={
@@ -200,7 +200,7 @@ class ClassesListCreateAPIView(generics.ListCreateAPIView):
             ),
         }),
 )
-class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
+class ClassRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
 
@@ -214,8 +214,8 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         
         Accessible by: Admin, HOD, Teacher
     '''
-    queryset = models.ClassesModel.objects.all()
-    serializer_class = serializers.ClassesSerializer
+    queryset = models.ClassModel.objects.all()
+    serializer_class = serializers.ClassSerializer
     permission_classes = [
         permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
     ]
@@ -224,7 +224,7 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? get single Class
     def get(self, request, *args, **kwargs):
         single_class = self.get_object()
-        serializer = serializers.ClassesFullSerializer(single_class)
+        serializer = serializers.ClassFullSerializer(single_class)
         return Response(serializer.data)
 
     #? Update Class of given Id
@@ -244,7 +244,7 @@ class ClassesRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 
             request.data['session_end'] = session_end.isoformat()
 
-            serializer = serializers.ClassesSerializer(
+            serializer = serializers.ClassSerializer(
                 single_class,
                 data=request.data,
                 partial=True,

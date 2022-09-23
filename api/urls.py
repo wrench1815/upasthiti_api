@@ -96,12 +96,12 @@ urlpatterns = [
          name='attendance-retrieve-update-destroy'),
 
     #? Classes
-    path('classes/',
-         ClassViews.ClassesListCreateAPIView.as_view(),
-         name='Classes-list-create'),
-    path('classes/<int:pk>/',
-         ClassViews.ClassesRetrieveUpdateDestroyAPIView.as_view(),
-         name='classes-retrieve-update-destroy'),
+    path('class/',
+         ClassViews.ClassListCreateAPIView.as_view(),
+         name='Class-list-create'),
+    path('class/<int:pk>/',
+         ClassViews.ClassRetrieveUpdateDestroyAPIView.as_view(),
+         name='class-retrieve-update-destroy'),
 
     #? College
     path('college/',

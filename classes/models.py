@@ -10,8 +10,8 @@ from student.models import StudentModel
 User = get_user_model()
 
 
-class ClassesModel(models.Model):
-    '''Model definition for ClassesModel.'''
+class ClassModel(models.Model):
+    '''Model definition for ClassModel.'''
 
     name = models.TextField()
     code = models.CharField(
@@ -51,11 +51,11 @@ class ClassesModel(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        '''Meta definition for ClassesModel.'''
+        '''Meta definition for ClassModel.'''
 
         verbose_name = 'Class'
         verbose_name_plural = 'Classes'
 
     def __str__(self):
-        '''Unicode representation of ClassesModel.'''
+        '''Unicode representation of ClassModel.'''
         return self.class_name

@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import ClassesModel
+from .models import ClassModel
 
 
-@admin.register(ClassesModel)
-class ClassesModelAdmin(admin.ModelAdmin):
-    '''Admin View for ClassesModel'''
+@admin.register(ClassModel)
+class ClassModelAdmin(admin.ModelAdmin):
+    '''Admin View for ClassModel'''
 
     list_display = [
         'name',
