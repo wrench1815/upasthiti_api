@@ -8,14 +8,14 @@ authors = ["Hardeep Kumar <hardeepkumar1815@gmail.com>"]
 python = "^3.10"
 Django = {extras = ["argon2"], version = "^4.0.6"}
 environs = {extras = ["django"], version = "^9.5.0"}
-dj-database-url = "^0.5.0"
+dj-database-url = "^1.0.0"
 whitenoise = "^6.1.0"
 django-jazzmin = "^2.5.0"
 djangorestframework = "^3.13.1"
 psycopg2-binary = "^2.9.3"
 gunicorn = "^20.1.0"
 django-cors-headers = "^3.12.0"
-drf-spectacular = "^0.22.1"
+drf-spectacular = "^0.24.1"
 drf-spectacular-sidecar = "^2022.5.1"
 djangorestframework-simplejwt = "^5.2.0"
 cloudinary = "^1.29.0"
