@@ -58,4 +58,4 @@ class ClassModel(models.Model):
 
     def __str__(self):
         '''Unicode representation of ClassModel.'''
-        return self.class_name
+        return self.name
