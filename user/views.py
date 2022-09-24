@@ -107,7 +107,8 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
         try:
             #? check if the college passed in case of teacher exist or not
-            if serializer.validated_data['is_teacher']:
+            if serializer.validated_data[
+                    'is_teacher'] and serializer.validated_data['college']:
                 try:
                     college = CollegeModel.objects.get(
                         id=serializer.validated_data['college'])
@@ -144,7 +145,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
             logger.info("User Saved Successfully")
 
             #? if user created is a teacher, then assign the College passed in request
-            if user.is_teacher:
+            if user.is_teacher and college:
                 user.college_teacher.add(college)  #? reverse relation
 
                 logger.info("User(Teacher) assigned to the College")
@@ -157,6 +158,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
             #? if development environment, log password
             if settings.DEBUG:
+                logger.info(f'{user}\n\n{user.college_teacher.all()}')
                 logger.info(
                     f'>>>>>>>>>>>>>>>>>>>>>>>>>>> password for user {request.data["email"]} is {request.data["password"]} <<<<<<<<<<<<<<<<<<<<<<<<<<<'
                 )
