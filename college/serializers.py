@@ -33,6 +33,22 @@ USER_FIELDS = [
 ]
 
 
+class CollegeTeacherSerializer(serializers.ModelSerializer):
+    '''
+        Nested TeacherSerializer for College
+    '''
+
+    # get full name from model User
+    full_name = serializers.CharField(source='get_full_name')
+
+    # get short name from model User
+    short_name = serializers.CharField(source='get_short_name')
+
+    class Meta:
+        model = User
+        fields = USER_FIELDS
+
+
 class CollegeHODSerializer(serializers.ModelSerializer):
     '''
         Nested HODSerializer for College
@@ -97,6 +113,7 @@ class CollegeSerializer(serializers.ModelSerializer):
     '''
 
     hod = CollegeHODSerializer(many=True)
+    teacher = CollegeTeacherSerializer(many=True)
     principal = CollegePrincipalSerializer()
     university = CollegeUniSerializer()
 
@@ -115,4 +132,5 @@ class CollegeCreateUpdateSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
             'hod',
+            'teacher',
         ]

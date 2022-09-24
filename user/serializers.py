@@ -37,6 +37,19 @@ class HODCollegeSerializer(serializers.ModelSerializer):
         ]
 
 
+class TeacherCollegeSerializer(serializers.ModelSerializer):
+    '''
+        Nested College Serializer for User objects
+    '''
+
+    class Meta:
+        model = CollegeModel
+        exclude = [
+            'hod',
+            'principal',
+        ]
+
+
 ##############################################################################################
 # End:Nested Serialisers
 ##############################################################################################
@@ -54,6 +67,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     college = HODCollegeSerializer(many=True, read_only=True)
     administrated_college = PrincipalCollegeSerializer(read_only=True)
+    college_teacher = TeacherCollegeSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
@@ -78,6 +92,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_teacher',
             'college',
             'administrated_college',
+            'college_teacher',
         ]
 
 
@@ -93,6 +108,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         min_length=8,
         max_length=16,
     )
+    college = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = User
@@ -112,6 +128,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'is_principal',
             'is_hod',
             'is_teacher',
+            'college',
         ]
 
     def validate_password(self, value):

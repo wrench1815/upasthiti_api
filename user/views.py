@@ -20,6 +20,8 @@ from .filters import HODFilter
 
 from api.paginator import StandardPagination
 
+from college.models import CollegeModel
+
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
@@ -101,8 +103,26 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         user = None
+        college = None
 
         try:
+            #? check if the college passed in case of teacher exist or not
+            if serializer.validated_data['is_teacher']:
+                try:
+                    college = CollegeModel.objects.get(
+                        id=serializer.validated_data['college'])
+                except CollegeModel.DoesNotExist:
+                    response = {
+                        'college': 'The College does not exist, Try Again.'
+                    }
+
+                    logger.warning(response)
+
+                    return Response(
+                        response,
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+
             user = User.objects.create_user(
                 profile_image=serializer.validated_data['profile_image'],
                 profile_image_public_id=serializer.
@@ -123,13 +143,19 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
             logger.info("User Saved Successfully")
 
-            # send email to user
+            #? if user created is a teacher, then assign the College passed in request
+            if user.is_teacher:
+                user.college_teacher.add(college)  #? reverse relation
+
+                logger.info("User(Teacher) assigned to the College")
+
+            #? send email to user
             subject = 'Welcome to Upasthiti'
             message = f'Hello {user.first_name},\n\nWelcome to Upasthiti.\n\nYour login credentials are:\n\nEmail: {user.email}\nPassword: {request.data["password"]}\n\nRegards,\nUpasthiti'
 
             user.email_user(subject, message)
 
-            # if development environment, log password
+            #? if development environment, log password
             if settings.DEBUG:
                 logger.info(
                     f'>>>>>>>>>>>>>>>>>>>>>>>>>>> password for user {request.data["email"]} is {request.data["password"]} <<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -145,7 +171,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         response = UserSerializer(user)
         logger.info('User Created Successfully')
 
-        # return created user
+        #? return created user
         return Response(response.data, status=status.HTTP_201_CREATED)
 
 
@@ -302,7 +328,7 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # find user by id and return 404 if not found
+        #? find user by id and return 404 if not found
         user = self.get_object()
 
         user.set_password(serializer.validated_data['password'])

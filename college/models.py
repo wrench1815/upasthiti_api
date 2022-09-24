@@ -31,6 +31,7 @@ class CollegeModel(models.Model):
     created_on = models.DateTimeField(default=timezone.now)
 
     hod = models.ManyToManyField(User, related_name='college')
+    teacher = models.ManyToManyField(User, related_name='college_teacher')
     university = models.ForeignKey(
         UniversityModel,
         on_delete=models.CASCADE,
