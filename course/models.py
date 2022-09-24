@@ -4,7 +4,6 @@ from django.utils import timezone
 from university.models import UniversityModel
 
 
-# Create your models here.
 class CourseModel(models.Model):
     '''Model definition for course.'''
 
@@ -12,10 +11,8 @@ class CourseModel(models.Model):
     code = models.CharField(
         max_length=15,
         unique=True,
-        # blank=True,
-        # null=True,
     )
-    university = models.OneToOneField(
+    university = models.ForeignKey(
         UniversityModel,
         on_delete=models.CASCADE,
     )
