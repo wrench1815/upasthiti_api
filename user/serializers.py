@@ -108,7 +108,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         min_length=8,
         max_length=16,
     )
-    college = serializers.CharField(allow_blank=True)
+    college = serializers.ListField(
+        child=serializers.CharField(allow_blank=True),
+        allow_empty=True,
+    )
 
     class Meta:
         model = User

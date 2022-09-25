@@ -103,18 +103,25 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         user = None
-        college = None
+        college_list = serializer.validated_data['college']
+        college_models = None
 
         try:
-            #? check if the college passed in case of teacher exist or not
-            if serializer.validated_data[
-                    'is_teacher'] and serializer.validated_data['college']:
+            #? check if the colleges passed in case of teacher exist or not
+            if serializer.validated_data['is_teacher'] and len(
+                    college_list) != 0:
                 try:
-                    college = CollegeModel.objects.get(
-                        id=serializer.validated_data['college'])
+                    college_models = CollegeModel.objects.filter(
+                        id__in=college_list)
+
+                    if college_models.count() != len(college_list):
+                        raise CollegeModel.DoesNotExist
+
                 except CollegeModel.DoesNotExist:
                     response = {
-                        'college': 'The College does not exist, Try Again.'
+                        'college': [
+                            'Not all Colleges exist in the given College List. Try Again with valid Colleges.'
+                        ]
                     }
 
                     logger.warning(response)
@@ -144,11 +151,14 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
             logger.info('User Saved Successfully')
 
-            #? if user created is a teacher, then assign the College passed in request
-            if user.is_teacher and college:
-                user.college_teacher.add(college)  #? reverse relation
+            #? if user created is a teacher, then assign the Colleges passed in request
+            if user.is_teacher and len(college_list) != 0:
+                if college_models.count() == len(college_list):
+                    #! Note: * in add(*college_models) spreads the items of list into individual values
+                    user.college_teacher.add(
+                        *college_models)  #? reverse relation
 
-                logger.info('User(Teacher) assigned to the College')
+                    logger.info('User(Teacher) assigned to the Colleges')
 
             #? send email to user
             subject = 'Welcome to Upasthiti'
