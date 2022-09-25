@@ -42,6 +42,13 @@ class UniversityRollNo(models.Model):
         related_name='university',
         on_delete=models.CASCADE,
     )
+    student = models.ForeignKey(
+        'StudentModel',
+        related_name='student_university_roll',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
     created_on = models.DateTimeField(default=timezone.now)
 
@@ -66,11 +73,22 @@ class CollegeRollNo(models.Model):
         Model definition for CollegeRollNo.
     '''
 
-    class_roll_no = models.CharField(max_length=15)
+    class_roll_no = models.CharField(
+        max_length=15,
+        unique=True,
+        default=random_rollno,
+    )
     college = models.ForeignKey(
         CollegeModel,
         related_name='college',
         on_delete=models.CASCADE,
+    )
+    student = models.ForeignKey(
+        'StudentModel',
+        related_name='student_college_roll',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     created_on = models.DateTimeField(default=timezone.now)
@@ -104,7 +122,7 @@ class StudentModel(models.Model):
     #     max_length=50,
     #     default=random_rollno,
     # )
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=15)
     address = models.TextField()
     district = models.CharField(
@@ -120,14 +138,20 @@ class StudentModel(models.Model):
     gender = models.CharField(max_length=15,
                               choices=GENDER_CHOICES,
                               default=random_gender)
-    college = models.ManyToManyField(
-        CollegeRollNo,
-        related_name='student_college',
-    )
-    university = models.ManyToManyField(
-        UniversityRollNo,
-        related_name='student_university',
-    )
+    # college = models.ForeignKey(
+    #     CollegeRollNo,
+    #     related_name='student_college',
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+    #     null=True,
+    # )
+    # university = models.ForeignKey(
+    #     UniversityRollNo,
+    #     related_name='student_university',
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+    #     null=True,
+    # )
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:

@@ -38,8 +38,7 @@ class CollegeSerializer(serializers.ModelSerializer):
     '''
 
     class Meta:
-        model = models.CollegeModel
-        # fields = '__all__'
+        model = CollegeModel
         exclude = [
             'hod',
             'teacher',
@@ -84,8 +83,9 @@ class StudentFullSerializer(serializers.ModelSerializer):
         Serializer to Display Student Data
     '''
 
-    college = CollegeRollNoSerializer(many=True)
-    university = UniversityRollNoSerializer(many=True)
+    college = CollegeRollNoSerializer(many=True, source='student_college_roll')
+    university = UniversityRollNoSerializer(many=True,
+                                            source='student_university_roll')
 
     class Meta:
         model = models.StudentModel
@@ -102,6 +102,99 @@ class StudentBulkSerializer(serializers.ListSerializer):
 
         studentlist = [models.StudentModel(**item) for item in validated_data]
         return models.StudentModel.objects.bulk_create(studentlist)
+
+
+class StudentUniRollCreateUpdateSerializer(serializers.ModelSerializer):
+
+    university_roll_no = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = models.UniversityRollNo
+        fields = [
+            'university_roll_no',
+            'university',
+        ]
+        optional_fields = [
+            'university_roll_no',
+            'university',
+        ]
+
+
+class StudentCollegeRollCreateUpdateSerializer(serializers.ModelSerializer):
+
+    class_roll_no = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = models.CollegeRollNo
+        fields = [
+            'class_roll_no',
+            'college',
+        ]
+        optional_fields = [
+            'class_roll_no',
+            'college',
+        ]
+
+
+class StudentCreateUpdateSerializerFull(serializers.ModelSerializer):
+    '''
+        Serializer to create and edit Student
+    '''
+    college = serializers.ListField(
+        child=StudentCollegeRollCreateUpdateSerializer(),
+        allow_empty=True,
+    )
+    university = serializers.ListField(
+        child=StudentUniRollCreateUpdateSerializer(),
+        allow_empty=True,
+    )
+
+    class Meta:
+        model = models.StudentModel
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'mobile',
+            'address',
+            'district',
+            'profile_image',
+            'profile_image_public_id',
+            'gender',
+            'college',
+            'university',
+        ]
+
+
+class StudentCreateUpdateSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to create and edit Student
+    '''
+
+    # college = serializers.ListField(
+    #     child=StudentCollegeRollCreateUpdateSerializer(),
+    #     allow_empty=True,
+    # )
+    # university = serializers.ListField(
+    #     child=StudentUniRollCreateUpdateSerializer(),
+    #     allow_empty=True,
+    # )
+
+    class Meta:
+        model = models.StudentModel
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'mobile',
+            'address',
+            'district',
+            'profile_image',
+            'profile_image_public_id',
+            'gender',
+            # 'college',
+            # 'university',
+        ]
 
 
 class StudentSerializer(serializers.ModelSerializer):
