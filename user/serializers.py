@@ -172,6 +172,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         Serializer for User Update
     '''
 
+    college = serializers.CharField(allow_blank=True)
+
     class Meta:
         model = User
         fields = [
@@ -188,6 +190,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'is_principal',
             'is_hod',
             'is_teacher',
+            'college',
         ]
 
 
