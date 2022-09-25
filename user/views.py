@@ -142,13 +142,13 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
                 is_teacher=serializer.validated_data['is_teacher'],
             )
 
-            logger.info("User Saved Successfully")
+            logger.info('User Saved Successfully')
 
             #? if user created is a teacher, then assign the College passed in request
             if user.is_teacher and college:
                 user.college_teacher.add(college)  #? reverse relation
 
-                logger.info("User(Teacher) assigned to the College")
+                logger.info('User(Teacher) assigned to the College')
 
             #? send email to user
             subject = 'Welcome to Upasthiti'
@@ -270,11 +270,52 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Update User of given Id
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
-        serializer = UserUpdateSerializer(user,
-                                          data=request.data,
-                                          partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        college = None
+        college_id = None
+
+        try:
+            serializer = UserUpdateSerializer(
+                user,
+                data=request.data,
+                partial=True,
+            )
+
+            serializer.is_valid(raise_exception=True)
+
+            #? check if the college passed in case of teacher exist or not
+            if serializer.validated_data[
+                    'is_teacher'] and serializer.validated_data['college']:
+                college_id = serializer.validated_data['college']
+                del serializer.validated_data['college']
+
+                try:
+                    college = CollegeModel.objects.get(id=college_id)
+                except CollegeModel.DoesNotExist:
+                    response = {
+                        'college': 'The College does not exist, Try Again.'
+                    }
+
+                    logger.warning(response)
+
+                    return Response(
+                        response,
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+
+            serializer.save()
+
+            #? if user is a teacher, then assign the College passed in request
+            if user.is_teacher:
+                if college:
+                    user.college_teacher.add(college)  #? reverse relation
+                    logger.info('User(Teacher) assigned to the College')
+                    logger.info(serializer.data)
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         response = {'detail': 'User Updated Successfully'}
         logger.info(response)
