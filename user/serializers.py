@@ -175,7 +175,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         Serializer for User Update
     '''
 
-    college = serializers.CharField(allow_blank=True)
+    college = serializers.ListField(
+        child=serializers.CharField(allow_blank=True),
+        allow_empty=True,
+    )
 
     class Meta:
         model = User

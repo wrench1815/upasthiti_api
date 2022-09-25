@@ -280,8 +280,8 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Update User of given Id
     def patch(self, request, *args, **kwargs):
         user = self.get_object()
-        college = None
-        college_id = None
+        college_list = None
+        college_models = None
 
         try:
             serializer = UserUpdateSerializer(
@@ -291,18 +291,24 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             )
 
             serializer.is_valid(raise_exception=True)
+            college_list = serializer.validated_data['college']
 
-            #? check if the college passed in case of teacher exist or not
-            if serializer.validated_data[
-                    'is_teacher'] and serializer.validated_data['college']:
-                college_id = serializer.validated_data['college']
-                del serializer.validated_data['college']
-
+            #? check if the colleges passed in case of teacher exist or not
+            if serializer.validated_data['is_teacher'] and len(
+                    college_list) != 0:
                 try:
-                    college = CollegeModel.objects.get(id=college_id)
+                    college_models = CollegeModel.objects.filter(
+                        id__in=college_list)
+                    del serializer.validated_data['college']
+
+                    if college_models.count() != len(college_list):
+                        raise CollegeModel.DoesNotExist
+
                 except CollegeModel.DoesNotExist:
                     response = {
-                        'college': 'The College does not exist, Try Again.'
+                        'college': [
+                            'Not all Colleges exist in the given College List. Try Again with valid Colleges.'
+                        ]
                     }
 
                     logger.warning(response)
@@ -314,12 +320,22 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 
             serializer.save()
 
-            #? if user is a teacher, then assign the College passed in request
-            if user.is_teacher:
-                if college:
-                    user.college_teacher.add(college)  #? reverse relation
-                    logger.info('User(Teacher) assigned to the College')
-                    logger.info(serializer.data)
+            #? if user created is a teacher, then assign the Colleges passed in request
+            if user.is_teacher and len(college_list) != 0:
+                if college_models.count() == len(college_list):
+                    #? clear the whole related list of colleges first
+                    #? reason: the list in update will have all colleges needed to add on user so better clear old list so that there is no college left in the user list
+                    user.college_teacher.clear()
+
+                    #! Note: * in add(*college_models) spreads the items of list into individual values
+                    user.college_teacher.add(
+                        *college_models)  #? reverse relation
+
+                    logger.info('User(Teacher) assigned to the Colleges')
+
+            elif user.is_teacher and len(college_list) == 0:
+                user.college_teacher.clear()
+                logger.info('User(Teacher) removed from all Colleges')
 
         except Exception as ex:
             logger.error(str(ex))
@@ -335,6 +351,7 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Delete User of given Id
     def delete(self, request, *args, **kwargs):
         user = self.get_object()
+        user.college_teacher.clear()  #? clear all relations with the college
         user.delete()
 
         response = {'detail': 'User Deleted Successfully'}
