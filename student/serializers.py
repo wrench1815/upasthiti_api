@@ -45,6 +45,38 @@ class CollegeSerializer(serializers.ModelSerializer):
         ]
 
 
+class StudentUniRollCreateUpdateSerializer(serializers.ModelSerializer):
+
+    university_roll_no = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = models.UniversityRollNo
+        fields = [
+            'university_roll_no',
+            'university',
+        ]
+        optional_fields = [
+            'university_roll_no',
+            'university',
+        ]
+
+
+class StudentCollegeRollCreateUpdateSerializer(serializers.ModelSerializer):
+
+    class_roll_no = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = models.CollegeRollNo
+        fields = [
+            'class_roll_no',
+            'college',
+        ]
+        optional_fields = [
+            'class_roll_no',
+            'college',
+        ]
+
+
 ##############################################################################################
 # End:Nested Serialisers
 ##############################################################################################
@@ -92,6 +124,7 @@ class StudentFullSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+#TODO: implement if possible
 class StudentBulkSerializer(serializers.ListSerializer):
     '''
         Parent Serializer for studentSerializer 
@@ -102,38 +135,6 @@ class StudentBulkSerializer(serializers.ListSerializer):
 
         studentlist = [models.StudentModel(**item) for item in validated_data]
         return models.StudentModel.objects.bulk_create(studentlist)
-
-
-class StudentUniRollCreateUpdateSerializer(serializers.ModelSerializer):
-
-    university_roll_no = serializers.CharField(allow_blank=True)
-
-    class Meta:
-        model = models.UniversityRollNo
-        fields = [
-            'university_roll_no',
-            'university',
-        ]
-        optional_fields = [
-            'university_roll_no',
-            'university',
-        ]
-
-
-class StudentCollegeRollCreateUpdateSerializer(serializers.ModelSerializer):
-
-    class_roll_no = serializers.CharField(allow_blank=True)
-
-    class Meta:
-        model = models.CollegeRollNo
-        fields = [
-            'class_roll_no',
-            'college',
-        ]
-        optional_fields = [
-            'class_roll_no',
-            'college',
-        ]
 
 
 class StudentCreateUpdateSerializerFull(serializers.ModelSerializer):
@@ -171,15 +172,6 @@ class StudentCreateUpdateSerializer(serializers.ModelSerializer):
         Serializer to create and edit Student
     '''
 
-    # college = serializers.ListField(
-    #     child=StudentCollegeRollCreateUpdateSerializer(),
-    #     allow_empty=True,
-    # )
-    # university = serializers.ListField(
-    #     child=StudentUniRollCreateUpdateSerializer(),
-    #     allow_empty=True,
-    # )
-
     class Meta:
         model = models.StudentModel
         fields = [
@@ -192,8 +184,6 @@ class StudentCreateUpdateSerializer(serializers.ModelSerializer):
             'profile_image',
             'profile_image_public_id',
             'gender',
-            # 'college',
-            # 'university',
         ]
 
 

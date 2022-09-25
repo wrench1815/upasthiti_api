@@ -30,11 +30,16 @@ def random_rollno():
 class UniversityRollNo(models.Model):
     '''
         Model definition for UniversityRollNo.
+
+        - holds the university roll no
+        - holds the related university
+        - holds the related student
+
+        #! The roll nos must be unique for each university and are tested by API endpoints only
     '''
 
     university_roll_no = models.CharField(
         max_length=15,
-        unique=True,
         default=random_rollno,
     )
     university = models.ForeignKey(
@@ -71,11 +76,16 @@ class UniversityRollNo(models.Model):
 class CollegeRollNo(models.Model):
     '''
         Model definition for CollegeRollNo.
+
+        - holds the college roll no
+        - holds the related college
+        - holds the related student
+
+        #! Note: The roll nos must be unique for each college and are tested by API endpoints only
     '''
 
     class_roll_no = models.CharField(
         max_length=15,
-        unique=True,
         default=random_rollno,
     )
     college = models.ForeignKey(
@@ -110,18 +120,17 @@ class CollegeRollNo(models.Model):
 
 
 class StudentModel(models.Model):
-    '''Model definition for StudentModel.'''
+    '''
+        Model definition for StudentModel.
+
+        - holds the data for Student
+        - must have a unique email
+        - data for multiple volleges and universities is shared if same email
+        
+        #! Note: update the university and college data if user already exist donot create a new student using the API endpoint only
+    '''
     first_name = models.TextField()
     last_name = models.TextField()
-    # class_rollno = models.CharField(
-    #     max_length=50,
-    #     default=random_rollno,
-    # )
-    # university_rollno = models.CharField(
-    #     unique=True,
-    #     max_length=50,
-    #     default=random_rollno,
-    # )
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=15)
     address = models.TextField()
@@ -138,20 +147,7 @@ class StudentModel(models.Model):
     gender = models.CharField(max_length=15,
                               choices=GENDER_CHOICES,
                               default=random_gender)
-    # college = models.ForeignKey(
-    #     CollegeRollNo,
-    #     related_name='student_college',
-    #     on_delete=models.CASCADE,
-    #     blank=True,
-    #     null=True,
-    # )
-    # university = models.ForeignKey(
-    #     UniversityRollNo,
-    #     related_name='student_university',
-    #     on_delete=models.CASCADE,
-    #     blank=True,
-    #     null=True,
-    # )
+
     created_on = models.DateTimeField(default=timezone.now)
 
     class Meta:
