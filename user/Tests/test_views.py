@@ -109,10 +109,19 @@ class TestViews(APITestCase):
             'mobile': '0123456789',
             'address': 'Black Hole',
             'password': 'Test@123',
-            'confirm_password': 'Test@123'
+            'confirm_password': 'Test@123',
+            'college': [],
+            'is_teacher': False,
+            'is_admin': False,
+            'is_principal': False,
+            'is_hod': False
         }
 
-        resp = self.client.post(reverse('user-list-create'), data)
+        resp = self.client.post(
+            reverse('user-list-create'),
+            data,
+            format='json',
+        )
         created_user = User.objects.get(email=data['email'])
 
         self.assertEqual(resp.data['email'], data['email'])
@@ -146,20 +155,35 @@ class TestViews(APITestCase):
             'address': 'Black Hole',
             'gender': 'Male',
             'password': 'Test@123',
-            'confirm_password': 'Test@123'
+            'confirm_password': 'Test@123',
+            'college': [],
+            'is_teacher': False,
+            'is_admin': False,
+            'is_principal': False,
+            'is_hod': False
         }
 
-        self.client.post(reverse('user-list-create'), data)
+        tes = self.client.post(
+            reverse('user-list-create'),
+            data,
+            format='json',
+        )
 
-        update_user = User.objects.get(email='update@user.com')
+        data1 = tes.json()
+        data1['email'] = 'update1@user.com'
+        data1['college'] = []
+        del data1['administrated_college']
+
+        data = tes.json()
+
         resp = self.client.patch(
-            reverse('user-retrieve-update-destroy',
-                    kwargs={'pk': update_user.id}),
-            {'email': 'update1@user.com'})
+            reverse('user-retrieve-update-destroy', kwargs={'pk': data['id']}),
+            data1,
+            format='json',
+        )
 
         updated_resp = self.client.get(
-            reverse('user-retrieve-update-destroy',
-                    kwargs={'pk': update_user.id}))
+            reverse('user-retrieve-update-destroy', kwargs={'pk': data['id']}))
 
         self.assertEqual(resp.data, {'detail': 'User Updated Successfully'})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
