@@ -18,7 +18,6 @@ from django.conf import settings
 from . import serializers, models
 
 from user.permissions import UserIsAdmin, UserIsHOD, UserIsTeacher
-
 from api.paginator import StandardPagination
 
 logger = logging.getLogger(__name__)
@@ -106,7 +105,6 @@ class ClassListCreateAPIView(generics.ListCreateAPIView):
             #! calculation is done in consideration that each semester is 6 months long
             #! this calculation is a rought estimate that the semester will end in 6 months
             #! during calculation, day, i.e 12 8 2022 the 12, is not considered and calculation is done considering the month only regardless of day
-
             session_end = datetime.strptime(
                 request.data['session_start'],
                 '%Y-%m-%d',
@@ -236,7 +234,6 @@ class ClassRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             #! calculation is done in consideration that each semester is 6 months long
             #! this calculation is a rought estimate that the semester will end in 6 months
             #! during calculation, day, i.e 12 8 2022 the 12, is not considered and calculation is done considering the month only regardless of day
-
             session_end = datetime.strptime(
                 request.data['session_start'],
                 '%Y-%m-%d',
@@ -269,9 +266,31 @@ class ClassRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Delete Class of given Id
     def delete(self, request, *args, **kwargs):
         single_class = self.get_object()
+
+        #? unlink student
+        if single_class.college:
+            single_class.college.classmodel_set.remove(single_class)
+
+        #? unlink department
+        if single_class.department:
+            single_class.department.classmodel_set.remove(single_class)
+
+        #? unlink course
+        if single_class.course:
+            single_class.course.classmodel_set.remove(single_class)
+
+        #? unlink teacher
+        if single_class.teacher:
+            single_class.teacher.classmodel_set.remove(single_class)
+
+        #? unlink student
+        if single_class.student:
+            single_class.student.classmodel_set.remove(single_class)
+
+        #? delete class
         single_class.delete()
 
-        response = {'detail': 'Class Deleted Successfully'}
+        response = {'detail': ['Class Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

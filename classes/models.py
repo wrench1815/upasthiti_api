@@ -29,18 +29,26 @@ class ClassModel(models.Model):
     college = models.ForeignKey(
         CollegeModel,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     department = models.ForeignKey(
         DepartmentModel,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     course = models.ForeignKey(
         CourseModel,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
     student = models.ForeignKey(
         StudentModel,
