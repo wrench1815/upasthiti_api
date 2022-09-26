@@ -23,12 +23,38 @@ logger = logging.getLogger(__name__)
         responses={
             #? 201
             status.HTTP_201_CREATED:
-            OpenApiResponse(description='Attendance Added Successfully'),
+            OpenApiResponse(
+                description='Attendance Added Successfully',
+                response=serializers.AttendanceSerializer,
+            ),
             #? 400
             status.HTTP_400_BAD_REQUEST:
-            OpenApiResponse({})
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
         },
-        description='Creates a new Attendance Object.'), )
+        description='Creates a new Attendance Object.'),
+    get=extend_schema(
+        request=serializers.AttendanceFullSerializer,
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Attendance List',
+                response=serializers.AttendanceFullSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description=
+        'Returns list of all Attendances.\n\nOrdering:\n\n- default: -created_on\n\n- allowed: created_on, -created_on'
+    ),
+)
 class AttendanceListCreateAPIView(generics.ListCreateAPIView):
     '''
         Allowed methods: GET, POST
@@ -68,6 +94,71 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
         return Response(response, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        description=
+        'Returns Single Attendance on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(
+                description='Attendance Details',
+                response=serializers.AttendanceFullSerializer,
+            ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    patch=extend_schema(
+        request=serializers.AttendanceFullSerializer,
+        description=
+        'Updates an Attendance of given Id with the provided Data.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Attendance Updated Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+    delete=extend_schema(
+        description='Deletes the Attendance of the given Id.\n\nargs: pk',
+        responses={
+            #? 200
+            status.HTTP_200_OK:
+            OpenApiResponse(description='Attendance Deleted Successfully', ),
+            #? 404
+            status.HTTP_404_NOT_FOUND:
+            OpenApiResponse(
+                description='Not found',
+                response=OpenApiTypes.OBJECT,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        }),
+)
 class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     '''
         Allowed methods: GET, PATCH, DELETE
@@ -90,35 +181,12 @@ class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     lookup_field = 'pk'
 
     #? get single Attendance
-    @extend_schema(
-        description=
-        'Returns Single Attendance on Application of given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            serializers.AttendanceFullSerializer,
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def get(self, request, *args, **kwargs):
         attendance = self.get_object()
         serializer = serializers.AttendanceFullSerializer(attendance)
         return Response(serializer.data)
 
     #? Update Attendance of given Id
-    @extend_schema(
-        request=serializers.AttendanceSerializer,
-        description=
-        'Updates the Attendance of given Id with the provided Data.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Attendance Updated Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def patch(self, request, *args, **kwargs):
         attendance = self.get_object()
         serializer = serializers.AttendanceSerializer(
@@ -129,28 +197,17 @@ class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        response = {'detail': 'Attendance Updated Sucecssfully'}
+        response = {'detail': ['Attendance Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
 
     #? Delete Attendance of given Id
-    @extend_schema(
-        description=
-        'Deletes the Attendance of the given Id.\n\nargs: pk\n\nAccessible by: Admin, Teacher',
-        responses={
-            #? 200
-            status.HTTP_200_OK:
-            OpenApiResponse(description='Attdendance Deleted Successfully'),
-            #? 404
-            status.HTTP_404_NOT_FOUND:
-            OpenApiResponse(description='Not found')
-        })
     def delete(self, request, *args, **kwargs):
         attendance = self.get_object()
         attendance.delete()
 
-        response = {'detail': 'Attendance Deleted Successfully'}
+        response = {'detail': ['Attendance Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

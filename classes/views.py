@@ -261,7 +261,7 @@ class ClassRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Class Updated Sucecssfully'}
+        response = {'detail': ['Class Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

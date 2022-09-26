@@ -357,7 +357,7 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         #! Delete the Student
         student.delete()
 
-        response = {'detail': 'Student Deleted Successfully'}
+        response = {'detail': ['Student Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -409,7 +409,7 @@ class StudentBulkCreateAPIView(generics.CreateAPIView):
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'Students Added Successfully'}
+        response = {'detail': ['Students Added Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_201_CREATED)

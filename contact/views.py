@@ -85,7 +85,7 @@ class ContactCreateAPIView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = {'detail': 'Contact Created Successfully'}
+        response = {'detail': ['Contact Created Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -200,7 +200,7 @@ class ContactRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = {'detail': 'Contact Updated Sucecssfully'}
+        response = {'detail': ['Contact Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -219,7 +219,7 @@ class ContactRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = {'detail': 'Contact Deleted Successfully'}
+        response = {'detail': ['Contact Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

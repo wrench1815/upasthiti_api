@@ -206,7 +206,7 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        response = {'detail': 'Department Updated Sucecssfully'}
+        response = {'detail': ['Department Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -216,7 +216,7 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         department = self.get_object()
         department.delete()
 
-        response = {'detail': 'Department Deleted Successfully'}
+        response = {'detail': ['Department Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -363,7 +363,7 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        response = {'detail': 'Department Type Updated Sucecssfully'}
+        response = {'detail': ['Department Type Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -373,7 +373,7 @@ class DepartmentTypeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         department_type = self.get_object()
         department_type.delete()
 
-        response = {'detail': 'Department Type Deleted Successfully'}
+        response = {'detail': ['Department Type deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

@@ -185,7 +185,7 @@ class TestViews(APITestCase):
         updated_resp = self.client.get(
             reverse('user-retrieve-update-destroy', kwargs={'pk': data['id']}))
 
-        self.assertEqual(resp.data, {'detail': 'User Updated Successfully'})
+        self.assertEqual(resp.data, {'detail': ['User Updated Successfully']})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(updated_resp.data['email'], 'update1@user.com')
 
@@ -195,7 +195,7 @@ class TestViews(APITestCase):
                     kwargs={'pk': self.destroyable_user.id}))
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(resp.data, {'detail': 'User Deleted Successfully'})
+        self.assertEqual(resp.data, {'detail': ['User Deleted Successfully']})
 
     def test_UserPasswordUpdate_success(self):
         data = {
@@ -209,7 +209,7 @@ class TestViews(APITestCase):
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.data,
-                         {'detail': 'Password Updated Successfully'})
+                         {'detail': ['Password Updated Successfully']})
 
         login_resp = self.client.post(reverse('obtain_token_pair'), {
             'email': self.forbidden_user.email,

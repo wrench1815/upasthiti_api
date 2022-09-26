@@ -343,7 +343,7 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             return Response({'detail': str(ex)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        response = {'detail': 'User Updated Successfully'}
+        response = {'detail': ['User Updated Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -354,7 +354,7 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         user.college_teacher.clear()  #? clear all relations with the college
         user.delete()
 
-        response = {'detail': 'User Deleted Successfully'}
+        response = {'detail': ['User Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -404,7 +404,7 @@ class UserPasswordUpdateAPIView(generics.GenericAPIView):
         user.set_password(serializer.validated_data['password'])
         user.save()
 
-        response = {'detail': 'Password Updated Successfully'}
+        response = {'detail': ['Password Updated Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

@@ -218,7 +218,7 @@ class CollegeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = {'detail': 'College Updated Sucecssfully'}
+        response = {'detail': ['College Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -237,7 +237,7 @@ class CollegeRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = {'detail': 'College Deleted Successfully'}
+        response = {'detail': ['College Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)

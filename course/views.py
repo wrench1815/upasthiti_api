@@ -206,7 +206,7 @@ class CourseRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        response = {'detail': 'Course Updated Sucecssfully'}
+        response = {'detail': ['Course Updated Sucecssfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
@@ -216,7 +216,7 @@ class CourseRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         course = self.get_object()
         course.delete()
 
-        response = {'detail': 'Course Deleted Successfully'}
+        response = {'detail': ['Course Deleted Successfully']}
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
