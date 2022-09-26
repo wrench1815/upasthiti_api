@@ -22,3 +22,14 @@ class HODFilter(filters.FilterSet):
     class Meta:
         model = User
         fields = ['college']
+
+
+class TeacherFilter(filters.FilterSet):
+    college = filters.NumberFilter(
+        field_name='college_teacher__id',
+        lookup_expr='exact',
+    )
+
+    class Meta:
+        model = User
+        fields = []

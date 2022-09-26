@@ -16,7 +16,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import HODSerializer, PrincipalSerializer, UserSerializer, UserCreateSerializer, UserUpdateSerializer, UserPasswordSerializer
 from .permissions import UserIsAdmin
-from .filters import HODFilter
+from .filters import HODFilter, TeacherFilter
 
 from api.paginator import StandardPagination
 
@@ -504,9 +504,13 @@ class UsersTeacherListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated & (UserIsAdmin)]
     lookup_field = 'pk'
     pagination_class = StandardPagination
-    filter_backends = [OrderingFilter]
+    filter_backends = [
+        OrderingFilter,
+        DjangoFilterBackend,
+    ]
     ordering_fields = 'date_added'
     ordering = '-date_added'
+    filterset_class = TeacherFilter
 
 
 @extend_schema_view(
