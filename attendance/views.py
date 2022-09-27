@@ -5,6 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
 
 from django.conf import settings
 
@@ -70,6 +71,11 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
         permissions.IsAuthenticated & (UserIsAdmin | UserIsTeacher)
     ]
     pagination_class = StandardPagination
+    filter_backends = [
+        OrderingFilter,
+    ]
+    ordering_fields = ['created_on']
+    ordering = '-created_on'
 
     #? create a new Attendance Object
     def post(self, request, *args, **kwargs):
