@@ -16,6 +16,8 @@ class AttendanceModel(models.Model):
         StudentModel,
         on_delete=models.CASCADE,
         related_name='attendance_student',
+        blank=True,
+        null=True,
     )
     for_class = models.ForeignKey(
         ClassModel,

@@ -205,6 +205,15 @@ class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Delete Attendance of given Id
     def delete(self, request, *args, **kwargs):
         attendance = self.get_object()
+
+        #? unlink class from attendance
+        if attendance.for_class:
+            attendance.for_class.attendance_class.remove(attendance)
+
+        #? unlink student from attendance
+        if attendance.student:
+            attendance.student.attendance_student.remove(attendance)
+
         attendance.delete()
 
         response = {'detail': ['Attendance Deleted Successfully']}
