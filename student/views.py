@@ -85,49 +85,12 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
             data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        #? collect list of all Colleges and Universities passed
-        college_roll_list = serializer.validated_data['college']
-        uni_roll_list = serializer.validated_data['university']
-
-        #? change the serializer and re-validate
-        #? reason: to easen the burden of having to remove uneeded fields
-        serializer = serializers.StudentCreateUpdateSerializer(
-            data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        student = None
-        college_set = True
-        university_set = True
-
         try:
             #? Create the Student as per updated Serializer
-            student = serializer.save()
+            serializer.save()
 
-            #? Assign college roll no and college if exist or create if needed
-            if len(college_roll_list) != 0:
-                for item in college_roll_list:
-                    col_roll, _ = models.CollegeRollNo.objects.get_or_create(
-                        class_roll_no=item['class_roll_no'],
-                        college=item['college'],
-                    )
-                    if col_roll.student:
-                        college_set = False
-
-                    col_roll.student = student
-                    col_roll.save()
-
-            #? Assign University roll no and University if exist or create if needed
-            if len(uni_roll_list) != 0:
-                for item in uni_roll_list:
-                    uni_roll, _ = models.UniversityRollNo.objects.get_or_create(
-                        university_roll_no=item['university_roll_no'],
-                        university=item['university'],
-                    )
-                    if uni_roll.student:
-                        university_set = False
-
-                    uni_roll.student = student
-                    uni_roll.save()
+            if settings.DEBUG:
+                logger.info(serializer.data)
 
         except Exception as ex:
             logger.error(str(ex))
@@ -137,24 +100,8 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        response = serializers.StudentFullSerializer(student).data
-        #! Runs only if DEBUG = True
-        if settings.DEBUG:
-            logger.info(response)
+        response = serializer.data
         logger.info('Student Added Successfully')
-
-        #? check if any error occured and add their message to the response
-        errors = {}
-        if not college_set:
-            errors['college'] = [
-                'Student with the College Roll no already Exist.'
-            ]
-        if not university_set:
-            errors['unoversity'] = [
-                'Student with the Univerity Roll no already Exist.'
-            ]
-        if not college_set or not university_set:
-            response['error'] = errors
 
         return Response(response, status=status.HTTP_201_CREATED)
 
@@ -258,9 +205,6 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     #? Update Student of given Id
     def patch(self, request, *args, **kwargs):
         student = self.get_object()
-        college_set = True
-        university_set = True
-
         serializer = serializers.StudentCreateUpdateSerializerFull(
             student,
             data=request.data,
@@ -268,52 +212,8 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        #? collect list of all Colleges and Universities passed
-        college_roll_list = serializer.validated_data['college']
-        uni_roll_list = serializer.validated_data['university']
-
-        #? change the serializer and re-validate
-        #? reason: to easen the burden of having to remove uneeded fields
-        serializer = serializers.StudentCreateUpdateSerializer(
-            student,
-            data=request.data,
-            partial=True,
-        )
-        serializer.is_valid(raise_exception=True)
-
         try:
-            #? Create the Student as per updated Serializer
-            student = serializer.save()
-
-            #? Assign college roll no and college if exist or create if needed
-            if len(college_roll_list) != 0:
-                for item in college_roll_list:
-                    col_roll, _ = models.CollegeRollNo.objects.get_or_create(
-                        class_roll_no=item['class_roll_no'],
-                        college=item['college'],
-                    )
-                    if col_roll.student and col_roll.student.id != student.id:
-                        college_set = False
-
-                    col_roll.student = student
-                    col_roll.save()
-            elif len(college_roll_list) == 0:
-                student.student_college_roll.clear()
-
-            #? Assign University roll no and University if exist or create if needed
-            if len(uni_roll_list) != 0:
-                for item in uni_roll_list:
-                    uni_roll, _ = models.UniversityRollNo.objects.get_or_create(
-                        university_roll_no=item['university_roll_no'],
-                        university=item['university'],
-                    )
-                    if uni_roll.student and uni_roll.student.id != student.id:
-                        university_set = False
-
-                    uni_roll.student = student
-                    uni_roll.save()
-            elif len(uni_roll_list) == 0:
-                student.student_university_roll.clear()
+            serializer.save()
 
         except Exception as ex:
             logger.error(str(ex))
@@ -324,25 +224,7 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             )
 
         response = {'detail': ['Student Updated Successfully']}
-
-        #! Runs only if DEBUG = True
-        if settings.DEBUG:
-            logger.info(serializers.StudentFullSerializer(student).data)
-
-        logger.info('Student Updated Successfully')
-
-        #? check if any error occured and add their message to the response
-        errors = {}
-        if not college_set:
-            errors['college'] = [
-                'Student with the College Roll no already Exist.'
-            ]
-        if not university_set:
-            errors['unoversity'] = [
-                'Student with the Univerity Roll no already Exist.'
-            ]
-        if not college_set or not university_set:
-            response['error'] = errors
+        logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
 
@@ -350,11 +232,11 @@ class StudentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     def delete(self, request, *args, **kwargs):
         student = self.get_object()
 
-        #! Unlink all related values
-        student.student_college_roll.clear()
-        student.student_university_roll.clear()
+        #? unlink college from Student
+        if student.college:
+            student.college.student.remove(student)
 
-        #! Delete the Student
+        #? Delete the Student
         student.delete()
 
         response = {'detail': ['Student Deleted Successfully']}

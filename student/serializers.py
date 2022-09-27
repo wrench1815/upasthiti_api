@@ -36,6 +36,7 @@ class CollegeSerializer(serializers.ModelSerializer):
     '''
         Serializer to Display College Data
     '''
+    university = UniversitySerializer()
 
     class Meta:
         model = CollegeModel
@@ -45,69 +46,9 @@ class CollegeSerializer(serializers.ModelSerializer):
         ]
 
 
-class StudentUniRollCreateUpdateSerializer(serializers.ModelSerializer):
-
-    university_roll_no = serializers.CharField(allow_blank=True)
-
-    class Meta:
-        model = models.UniversityRollNo
-        fields = [
-            'university_roll_no',
-            'university',
-        ]
-        optional_fields = [
-            'university_roll_no',
-            'university',
-        ]
-
-
-class StudentCollegeRollCreateUpdateSerializer(serializers.ModelSerializer):
-
-    class_roll_no = serializers.CharField(allow_blank=True)
-
-    class Meta:
-        model = models.CollegeRollNo
-        fields = [
-            'class_roll_no',
-            'college',
-        ]
-        optional_fields = [
-            'class_roll_no',
-            'college',
-        ]
-
-
 ##############################################################################################
 # End:Nested Serialisers
 ##############################################################################################
-
-
-class UniversityRollNoSerializer(serializers.Serializer):
-    '''
-        Nested Serializer for University Roll no
-    '''
-
-    university = UniversitySerializer()
-    university_roll_no = serializers.CharField()
-    created_on = serializers.DateTimeField()
-
-    class Mets:
-        model = models.UniversityRollNo
-        fields = '__all__'
-
-
-class CollegeRollNoSerializer(serializers.Serializer):
-    '''
-        Nested Serializer for College Roll no
-    '''
-
-    college = CollegeSerializer()
-    class_roll_no = serializers.CharField()
-    created_on = serializers.DateTimeField()
-
-    class Mets:
-        model = models.CollegeRollNo
-        fields = '__all__'
 
 
 class StudentFullSerializer(serializers.ModelSerializer):
@@ -115,40 +56,17 @@ class StudentFullSerializer(serializers.ModelSerializer):
         Serializer to Display Student Data
     '''
 
-    college = CollegeRollNoSerializer(many=True, source='student_college_roll')
-    university = UniversityRollNoSerializer(many=True,
-                                            source='student_university_roll')
+    college = CollegeSerializer()
 
     class Meta:
         model = models.StudentModel
         fields = '__all__'
 
 
-#TODO: implement if possible
-class StudentBulkSerializer(serializers.ListSerializer):
-    '''
-        Parent Serializer for studentSerializer 
-        Used for Bulk Posting objects
-    '''
-
-    def create(self, validated_data):
-
-        studentlist = [models.StudentModel(**item) for item in validated_data]
-        return models.StudentModel.objects.bulk_create(studentlist)
-
-
 class StudentCreateUpdateSerializerFull(serializers.ModelSerializer):
     '''
         Serializer to create and edit Student
     '''
-    college = serializers.ListField(
-        child=StudentCollegeRollCreateUpdateSerializer(),
-        allow_empty=True,
-    )
-    university = serializers.ListField(
-        child=StudentUniRollCreateUpdateSerializer(),
-        allow_empty=True,
-    )
 
     class Meta:
         model = models.StudentModel
@@ -163,8 +81,22 @@ class StudentCreateUpdateSerializerFull(serializers.ModelSerializer):
             'profile_image_public_id',
             'gender',
             'college',
-            'university',
+            'class_roll_no',
+            'university_roll_no',
         ]
+
+
+#TODO: implement if possible
+class StudentBulkSerializer(serializers.ListSerializer):
+    '''
+        Parent Serializer for studentSerializer 
+        Used for Bulk Posting objects
+    '''
+
+    def create(self, validated_data):
+
+        studentlist = [models.StudentModel(**item) for item in validated_data]
+        return models.StudentModel.objects.bulk_create(studentlist)
 
 
 class StudentCreateUpdateSerializer(serializers.ModelSerializer):
