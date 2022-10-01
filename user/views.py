@@ -160,6 +160,14 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
 
                     logger.info('User(Teacher) assigned to the Colleges')
 
+            #? if user created is a HOD, then assign the Colleges passed in request
+            if user.is_hod and len(college_list) != 0:
+                if college_models.count() == len(college_list):
+                    #! Note: * in add(*college_models) spreads the items of list into individual values
+                    user.college.add(*college_models)  #? reverse relation
+
+                    logger.info('User(HOD) assigned to the Colleges')
+
             #? send email to user
             subject = 'Welcome to Upasthiti'
             message = f'Hello {user.first_name},\n\nWelcome to Upasthiti.\n\nYour login credentials are:\n\nEmail: {user.email}\nPassword: {request.data["password"]}\n\nRegards,\nUpasthiti'
@@ -294,8 +302,9 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
             college_list = serializer.validated_data['college']
 
             #? check if the colleges passed in case of teacher exist or not
-            if serializer.validated_data['is_teacher'] and len(
-                    college_list) != 0:
+            if (serializer.validated_data['is_teacher']
+                    or serializer.validated_data['is_hod']
+                ) and len(college_list) != 0:
                 try:
                     college_models = CollegeModel.objects.filter(
                         id__in=college_list)
@@ -320,9 +329,8 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 
             serializer.save()
 
-            #? if user created is a teacher, then assign the Colleges passed in request
-            if user.is_teacher and len(college_list) != 0:
-                if college_models.count() == len(college_list):
+            if len(college_list) != 0:
+                if user.is_teacher:
                     #? clear the whole related list of colleges first
                     #? reason: the list in update will have all colleges needed to add on user so better clear old list so that there is no college left in the user list
                     user.college_teacher.clear()
@@ -333,9 +341,24 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
 
                     logger.info('User(Teacher) assigned to the Colleges')
 
-            elif user.is_teacher and len(college_list) == 0:
-                user.college_teacher.clear()
-                logger.info('User(Teacher) removed from all Colleges')
+                if user.is_hod:
+                    #? clear the whole related list of colleges first
+                    #? reason: the list in update will have all colleges needed to add on user so better clear old list so that there is no college left in the user list
+                    user.college.clear()
+
+                    #! Note: * in add(*college_models) spreads the items of list into individual values
+                    user.college.add(*college_models)  #? reverse relation
+
+                    logger.info('User(Teacher) assigned to the Colleges')
+
+            elif len(college_list) == 0:
+                if user.is_teacher:
+                    user.college_teacher.clear()
+                    logger.info('User(Teacher) removed from all Colleges')
+
+                if user.is_hod:
+                    user.college.clear()
+                    logger.info('User(HOD) removed from all Colleges')
 
         except Exception as ex:
             logger.error(str(ex))
@@ -352,6 +375,14 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     def delete(self, request, *args, **kwargs):
         user = self.get_object()
         user.college_teacher.clear()  #? clear all relations with the college
+        user.college.clear()  #? clear all relations with the college
+        if user.is_principal:
+            colleges = CollegeModel.objects.filter(principal=user.id)
+            if colleges.count() != 0:
+                for c in colleges:
+                    c.principal = None
+                    c.save()
+
         user.delete()
 
         response = {'detail': ['User Deleted Successfully']}
