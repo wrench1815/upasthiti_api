@@ -334,6 +334,7 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                     #? clear the whole related list of colleges first
                     #? reason: the list in update will have all colleges needed to add on user so better clear old list so that there is no college left in the user list
                     user.college_teacher.clear()
+                    user.college.clear()
 
                     #! Note: * in add(*college_models) spreads the items of list into individual values
                     user.college_teacher.add(
@@ -352,13 +353,20 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                     logger.info('User(Teacher) assigned to the Colleges')
 
             elif len(college_list) == 0:
-                # if user.is_teacher:
-                user.college_teacher.clear()
-                logger.info('User(Teacher) removed from all Colleges')
+                if user.is_teacher:
+                    user.college_teacher.clear()
+                    user.college.clear()
+                    logger.info('User(Teacher) removed from all Colleges')
 
-                # if user.is_hod:
-                user.college.clear()
-                logger.info('User(HOD) removed from all Colleges')
+                if user.is_hod:
+                    user.college.clear()
+                    user.college_teacher.clear()
+                    logger.info('User(HOD) removed from all Colleges')
+
+                if not user.is_teacher and not user.is_hod:
+                    user.college.clear()
+                    user.college_teacher.clear()
+                    logger.info('User removed from all Colleges')
 
         except Exception as ex:
             logger.error(str(ex))
