@@ -12,6 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.conf import settings
 
 from . import serializers, models
+from .filters import StudentFilter
 
 from user.permissions import UserIsAdmin, UserIsHOD, UserIsTeacher
 
@@ -81,9 +82,7 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
     ]
     ordering_fields = ['created_on']
     ordering = '-created_on'
-    filterset_fields = [
-        'college',
-    ]
+    filterset_class = StudentFilter
 
     #? create a new Student Object
     def post(self, request, *args, **kwargs):
