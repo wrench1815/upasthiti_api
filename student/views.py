@@ -75,9 +75,15 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
         permissions.IsAuthenticated & (UserIsAdmin | UserIsHOD | UserIsTeacher)
     ]
     pagination_class = StandardPagination
-    filter_backends = [OrderingFilter]
+    filter_backends = [
+        OrderingFilter,
+        DjangoFilterBackend,
+    ]
     ordering_fields = ['created_on']
     ordering = '-created_on'
+    filterset_fields = [
+        'college',
+    ]
 
     #? create a new Student Object
     def post(self, request, *args, **kwargs):
