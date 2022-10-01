@@ -283,9 +283,9 @@ class ClassRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         if single_class.teacher:
             single_class.teacher.classmodel_set.remove(single_class)
 
-        #? unlink student
-        if single_class.student:
-            single_class.student.classmodel_set.remove(single_class)
+        #? unlink students
+        if single_class.student.count() != 0:
+            single_class.student.clear()
 
         #? delete class
         single_class.delete()

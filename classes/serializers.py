@@ -119,7 +119,3 @@ class ClassSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
         ]
-
-    # Todo: validation
-    def validate(self, attrs):
-        return super().validate(attrs)

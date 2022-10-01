@@ -50,11 +50,10 @@ class ClassModel(models.Model):
         blank=True,
         null=True,
     )
-    student = models.ForeignKey(
+    student = models.ManyToManyField(
         StudentModel,
-        on_delete=models.CASCADE,
+        related_name='class_student',
         blank=True,
-        null=True,
     )
     created_on = models.DateTimeField(default=timezone.now)
 
