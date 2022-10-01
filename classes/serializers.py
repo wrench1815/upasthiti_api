@@ -7,6 +7,7 @@ from college.models import CollegeModel
 from college import serializers as college_serializers
 from department.models import DepartmentModel
 from course.models import CourseModel
+from student.serializers import StudentFullSerializer
 
 User = get_user_model()
 
@@ -103,6 +104,7 @@ class ClassFullSerializer(serializers.ModelSerializer):
     department = NestedDepartmentSerializer()
     course = NestedCourseSerializer()
     teacher = NestedTeacherSerializer()
+    student = StudentFullSerializer(many=True)
 
     class Meta:
         model = models.ClassModel
