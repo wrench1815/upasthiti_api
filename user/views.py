@@ -352,13 +352,13 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
                     logger.info('User(Teacher) assigned to the Colleges')
 
             elif len(college_list) == 0:
-                if user.is_teacher:
-                    user.college_teacher.clear()
-                    logger.info('User(Teacher) removed from all Colleges')
+                # if user.is_teacher:
+                user.college_teacher.clear()
+                logger.info('User(Teacher) removed from all Colleges')
 
-                if user.is_hod:
-                    user.college.clear()
-                    logger.info('User(HOD) removed from all Colleges')
+                # if user.is_hod:
+                user.college.clear()
+                logger.info('User(HOD) removed from all Colleges')
 
         except Exception as ex:
             logger.error(str(ex))
@@ -376,12 +376,12 @@ class UserRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         user = self.get_object()
         user.college_teacher.clear()  #? clear all relations with the college
         user.college.clear()  #? clear all relations with the college
-        if user.is_principal:
-            colleges = CollegeModel.objects.filter(principal=user.id)
-            if colleges.count() != 0:
-                for c in colleges:
-                    c.principal = None
-                    c.save()
+
+        colleges = CollegeModel.objects.filter(principal=user.id)
+        if colleges.count() != 0:
+            for c in colleges:
+                c.principal = None
+                c.save()
 
         user.delete()
 
