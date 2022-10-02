@@ -10,12 +10,15 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from dateutil.relativedelta import relativedelta
 
 from django.utils.crypto import get_random_string
 from django.conf import settings
 
 from . import serializers, models
+from .filters import ClassFilter
 
 from user.permissions import UserIsAdmin, UserIsHOD, UserIsTeacher
 from api.paginator import StandardPagination
@@ -78,9 +81,11 @@ class ClassListCreateAPIView(generics.ListCreateAPIView):
     pagination_class = StandardPagination
     filter_backends = [
         OrderingFilter,
+        DjangoFilterBackend,
     ]
     ordering_fields = ['created_on']
     ordering = '-created_on'
+    filterset_class = ClassFilter
 
     #? create a new Class
     def post(self, request, *args, **kwargs):
