@@ -13,7 +13,7 @@ from django.conf import settings
 from . import serializers, models
 from .filters import DepartmentTypeFilter
 
-from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsTeacher
+from user.permissions import UserIsAdmin, UserIsPrincipal, UserIsTeacher, UserIsTeacherRO
 
 from api.paginator import StandardPagination
 
@@ -68,7 +68,8 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.DepartmentModel.objects.all()
     serializer_class = serializers.DepartmentFullSerializer
     permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
+        permissions.IsAuthenticated &
+        (UserIsAdmin | UserIsPrincipal | UserIsTeacherRO)
     ]
     pagination_class = StandardPagination
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
@@ -185,7 +186,8 @@ class DepartmentRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
     queryset = models.DepartmentModel.objects.all()
     serializer_class = serializers.DepartmentSerializer
     permission_classes = [
-        permissions.IsAuthenticated & (UserIsAdmin | UserIsPrincipal)
+        permissions.IsAuthenticated &
+        (UserIsAdmin | UserIsPrincipal | UserIsTeacherRO)
     ]
     lookup_field = 'pk'
 
