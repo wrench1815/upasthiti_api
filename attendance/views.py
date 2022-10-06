@@ -1,4 +1,5 @@
 import logging
+from urllib import response
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from drf_spectacular.types import OpenApiTypes
@@ -226,3 +227,52 @@ class AttendanceRetrieveUpdateDestroyAPIView(generics.GenericAPIView):
         logger.info(response)
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+@extend_schema_view(
+    post=extend_schema(
+        request=serializers.AttendanceBulkSerializer,
+        responses={
+            #? 201
+            status.HTTP_201_CREATED:
+            OpenApiResponse(
+                description='Attendance Added Successfully',
+                response=serializers.AttendanceBulkSerializer,
+            ),
+            #? 400
+            status.HTTP_400_BAD_REQUEST:
+            OpenApiResponse(
+                description='Bad Request',
+                response=OpenApiTypes.OBJECT,
+            ),
+        },
+        description='Creates a new Attendance Object in Bulk.'), )
+class AttendanceBulkCreateAPIView(generics.CreateAPIView):
+    queryset = models.AttendanceModel.objects.all()
+    serializer_class = serializers.AttendanceBulkSerializer
+    permission_classes = [
+        permissions.IsAuthenticated & (UserIsAdmin | UserIsTeacher)
+    ]
+
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.AttendanceBulkSerializer(
+            data=request.data,
+            many=True,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        try:
+
+            serializer.save()
+
+        except Exception as ex:
+            logger.error(str(ex))
+
+            return Response({'detail': str(ex)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # response = {'detail': ['Attendance Added Successfully']}
+        response = serializer.data
+        logger.info(response)
+
+        return Response(response, status=status.HTTP_201_CREATED)

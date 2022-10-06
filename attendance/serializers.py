@@ -28,3 +28,30 @@ class AttendanceSerializer(serializers.ModelSerializer):
         exclude = [
             'created_on',
         ]
+
+
+class AttendanceListSerializer(serializers.ListSerializer):
+    '''
+        Child List Serializer to create a list of Attendances.
+        To be used to create Attendances in Bulk.
+    '''
+
+    def create(self, validated_data):
+        attendance_list = [
+            models.AttendanceModel(**item) for item in validated_data
+        ]
+        return models.AttendanceModel.objects.bulk_create(attendance_list)
+
+
+class AttendanceBulkSerializer(serializers.ModelSerializer):
+    '''
+        Serializer to create Attendances in Bulk. 
+    '''
+
+    class Meta:
+        #? Nesting Serializer
+        list_serializer_class = AttendanceListSerializer
+        model = models.AttendanceModel
+        exclude = [
+            'created_on',
+        ]
