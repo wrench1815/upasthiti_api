@@ -13,4 +13,5 @@ class AttendanceFilter(filters.FilterSet):
             'is_present',
             'is_late',
             'is_absent',
+            'for_class',
         ]
