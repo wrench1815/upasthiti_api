@@ -175,5 +175,5 @@ cython_debug/
 # Kolo
 .kolo/
 
-back.json
+backup/
 
